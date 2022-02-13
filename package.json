@@ -20,7 +20,11 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@walletconnect/web3-provider": "^1.7.1",
+    "@web3auth/web3auth": "^0.2.4",
     "clsx": "^1.1.1",
+    "magic-sdk": "7.0.0",
+    "moralis": "^1.3.1",
     "next": "^12.0.10",
     "react": "^17.0.2",
     "react-canvas-draw": "^1.2.1",

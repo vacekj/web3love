@@ -1,6 +1,9 @@
 import * as React from 'react';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import CanvasDraw from 'react-canvas-draw';
+import ConnectButton from '@/components/ConnectButton';
+import { useMoralis, useNFTBalances } from 'react-moralis';
+import SendMessage from '@/components/SendMessage';
 
 /**
  * SVGR Support
@@ -12,15 +15,26 @@ import CanvasDraw from 'react-canvas-draw';
 
 export default function HomePage() {
   const canvas = useRef();
+  const { user } = useMoralis();
+  const { getNFTBalances, data, error, isLoading, isFetching } = useNFTBalances(
+    {
+      chain: 'polygon',
+    }
+  );
+
+  useEffect(() => {
+    getNFTBalances();
+  }, [user]);
+
   return (
     <main className='bg-red-700'>
       <div className='layout flex min-h-screen flex-col items-center text-center'>
         <div className='mt-16 rounded-md bg-orange-100 py-8 px-4 text-2xl'>
           Welcome to Web3 Love
         </div>
-        <div className='mt-8 rounded-md bg-orange-100 p-4 text-2xl'>
-          Connect
-        </div>
+        <div>{user?.get('ethAddress')}</div>
+        <ConnectButton />
+
         <div className='mx-auto mt-8 flex w-4/5 flex-col justify-start rounded-md bg-white p-4'>
           <div className='text-left'>To:</div>
           <input
@@ -43,15 +57,18 @@ export default function HomePage() {
             />
           </div>
           <div className='flex justify-center'>
-            <div className='w-fit rounded-md bg-red-700 p-4 text-2xl text-white'>
-              <button
-                onClick={() => {
-                  console.log(canvas.current.getSaveData());
-                }}
-              >
-                Send
-              </button>
-            </div>
+            <SendMessage
+              onClick={() => {
+                console.log(canvas.current.getSaveData());
+              }}
+            />
+          </div>
+          <div>
+            Your messages:
+            {data?.result?.map((r) => {
+              console.log(r);
+              return <img className={'h-32 w-32'} src={r.metadata?.image} />;
+            })}
           </div>
         </div>
         <footer className='absolute bottom-2 text-gray-700'>
