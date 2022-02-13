@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useRef } from 'react';
 import CanvasDraw from 'react-canvas-draw';
 
 /**
@@ -10,6 +11,7 @@ import CanvasDraw from 'react-canvas-draw';
  */
 
 export default function HomePage() {
+  const canvas = useRef();
   return (
     <main className='bg-red-700'>
       <div className='layout flex min-h-screen flex-col items-center text-center'>
@@ -33,11 +35,22 @@ export default function HomePage() {
             placeholder='Enter the message here'
           />
           <div className='w-full'>
-            <CanvasDraw hideGrid={true} canvasHeight={400} canvasWidth={800} />
+            <CanvasDraw
+              hideGrid={true}
+              canvasHeight={400}
+              canvasWidth={800}
+              ref={canvas}
+            />
           </div>
           <div className='flex justify-center'>
             <div className='w-fit rounded-md bg-red-700 p-4 text-2xl text-white'>
-              <button>Send</button>
+              <button
+                onClick={() => {
+                  console.log(canvas.current.getSaveData());
+                }}
+              >
+                Send
+              </button>
             </div>
           </div>
         </div>
