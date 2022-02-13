@@ -10,24 +10,33 @@ import * as React from 'react';
 
 export default function HomePage() {
   return (
-    <main>
-      <section className='bg-white'>
-        <div className='layout flex min-h-screen flex-col items-center justify-center text-center'>
-          <div className='rounded-md bg-red-300 p-4'>Connect</div>
-          <div>
-            <div>To</div>
-            <div>
-              <input type='addres' />
-            </div>
-            <div>Message</div>
-            <input type='message' />
-            <div>Canvas drawing</div>
-          </div>
-          <footer className='absolute bottom-2 text-gray-700'>
-            © {new Date().getFullYear()} By{" Jessi's hackers"}
-          </footer>
+    <main className='bg-red-700'>
+      <div className='layout flex min-h-screen flex-col items-center text-center'>
+        <div className='mt-16 rounded-md bg-orange-100 py-8 px-4 text-2xl'>
+          Welcome to Web3 Love
         </div>
-      </section>
+        <div className='mt-8 rounded-md bg-orange-100 p-4'>Connect</div>
+        <div className='mx-auto mt-8 flex w-4/5 flex-col justify-start rounded-md bg-white p-4'>
+          <div className='text-left'>To:</div>
+          <div className='text-left'>
+            <input
+              type='addres'
+              className='bg-orange-300'
+              placeholder='Enter the recipient address here'
+            />
+          </div>
+          <div>Message:</div>
+          <input
+            type='message'
+            className='bg-orange-300'
+            placeholder='Enter the message here'
+          />
+          <div>Canvas drawing</div>
+        </div>
+        <footer className='absolute bottom-2 text-gray-700'>
+          © {new Date().getFullYear()} By{" Jessi's hackers"}
+        </footer>
+      </div>
     </main>
   );
 }
