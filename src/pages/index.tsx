@@ -2,29 +2,31 @@ import * as React from 'react';
 import { useEffect, useRef } from 'react';
 import CanvasDraw from 'react-canvas-draw';
 import ConnectButton from '@/components/ConnectButton';
-import { useMoralis, useNFTBalances } from 'react-moralis';
+import { useApiContract, useMoralis, useNFTBalances } from 'react-moralis';
 import SendMessage from '@/components/SendMessage';
-
-/**
- * SVGR Support
- * Caveat: No React Props Type.
- *
- * You can override the next-env if the type is important to you
- * @see https://stackoverflow.com/questions/68103844/how-to-override-next-js-svg-module-declaration
- */
+import abi from '../nftContractAbi';
 
 export default function HomePage() {
   const canvas = useRef();
   const { user } = useMoralis();
+
   const { getNFTBalances, data, error, isLoading, isFetching } = useNFTBalances(
     {
       chain: 'polygon',
+      address: '0x72B6Dc1003E154ac71c76D3795A3829CfD5e33b9',
     }
   );
-
   useEffect(() => {
     getNFTBalances();
   }, [user]);
+
+  const { runContractFunction, data, error, isLoading, isFetching } =
+    useApiContract({
+      address: '0x72B6Dc1003E154ac71c76D3795A3829CfD5e33b9',
+      functionName: 'mint',
+      abi,
+      params: {},
+    });
 
   return (
     <main className='bg-red-700'>
