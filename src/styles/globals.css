@@ -68,6 +68,9 @@
   .h4 {
     @apply font-primary text-base font-bold md:text-lg;
   }
+  body {
+    @apply bg-green-300;
+  }
 
   body,
   .p {
