@@ -27,7 +27,7 @@ export default function HomePage() {
           <div className='layout flex min-h-screen flex-col items-center justify-center text-center'>
           Web3 Love
             <footer className='absolute bottom-2 text-gray-700'>
-              © {new Date().getFullYear()} By{"Jessi's hackers"}
+              © {new Date().getFullYear()} By{" Jessi's hackers"}
             </footer>
           </div>
         </section>
