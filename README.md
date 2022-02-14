@@ -1,5 +1,5 @@
 
-# Hello World
+# Web3Love
 
 # Send message flow
 1. Upload drawing to IPFS
@@ -7,27 +7,5 @@
 3. Upload the JSON metadata to IPFS
 4. Call the mint function with the current address as caller and the IPFS JSON metadata link as tokenUri.
 
-# Receive and display messages.
-1. Get all NFTs of user belonging to a contract. 
-2. Decrypt the messages.
-
-
-## Contribute
-
-### Commit message format
-Git commit messages must follow the following format otherwise they won't be accepted:  
-
-`git commit -m: <type><message body>`
-### Possible types:
-feat,
-fix,
-docs,
-chore,
-style,
-refactor,
-ci,
-test,
-perf,
-revert,
-vercel,
-wip
+# Todo
+- Finish postcard and set it as background for the canvas. Somehow restrict the area that the user can draw on.

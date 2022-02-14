@@ -10,23 +10,20 @@ export default function HomePage() {
   const canvas = useRef();
   const { user } = useMoralis();
 
-  const { getNFTBalances, data, error, isLoading, isFetching } = useNFTBalances(
-    {
-      chain: 'polygon',
-      address: '0x72B6Dc1003E154ac71c76D3795A3829CfD5e33b9',
-    }
-  );
+  const { getNFTBalances, data } = useNFTBalances({
+    chain: 'polygon',
+    // address: '0x72B6Dc1003E154ac71c76D3795A3829CfD5e33b9',
+  });
   useEffect(() => {
     getNFTBalances();
   }, [user]);
 
-  const { runContractFunction, data, error, isLoading, isFetching } =
-    useApiContract({
-      address: '0x72B6Dc1003E154ac71c76D3795A3829CfD5e33b9',
-      functionName: 'mint',
-      abi,
-      params: {},
-    });
+  const { data: nftData, runContractFunction: mintNft } = useApiContract({
+    address: '0x72B6Dc1003E154ac71c76D3795A3829CfD5e33b9',
+    functionName: 'mint',
+    abi,
+    params: {},
+  });
 
   return (
     <main className='bg-red-700'>
@@ -61,7 +58,12 @@ export default function HomePage() {
           <div className='flex justify-center'>
             <SendMessage
               onClick={() => {
-                console.log(canvas.current.getSaveData());
+                fetch("/api/upload", {
+                  method: "POST",
+                  body: JSON.stringify({
+                    recipient:
+                  })
+                })
               }}
             />
           </div>
