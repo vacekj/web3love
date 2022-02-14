@@ -6,6 +6,10 @@ import SendMessage from '@/components/SendMessage';
 import abi from '../nftContractAbi';
 import CanvasDraw from 'react-canvas-draw';
 import ResetCanvasButton from '@/components/ResetCanvasButton';
+import { NFTStorage } from 'nft.storage';
+
+const API_KEY = process.env.NEXT_PUBLIC_NFT_STORAGE_API_KEY;
+const client = new NFTStorage({ token: API_KEY! });
 
 export default function HomePage() {
   const canvas = useRef<HTMLCanvasElement | null>(null);
@@ -21,6 +25,8 @@ export default function HomePage() {
   }, [user]);
   const address = useRef<string | null>();
 
+  const postcardImage = useRef();
+
   const { data: nftData, runContractFunction: mintNft } = useApiContract({
     address: '0x72B6Dc1003E154ac71c76D3795A3829CfD5e33b9',
     functionName: 'mint',
@@ -30,34 +36,32 @@ export default function HomePage() {
     },
   });
 
-  const onClickSend = () => {
-    console.log(canvas.current.getDataURL());
-    // fetch('/api/upload', {
-    //   method: 'POST',
-    //   body: JSON.stringify({
-    //     recipient: '',
-    //   }),
-    // });
-    //   const data = await canvas.current?.exportImage('jpeg');
-    //   console.log(data);
-    //   const nftMetadata = await fetch('/api/upload', {
-    //     method: 'POST',
-    //     body: JSON.stringify({
-    //       recipient,
-    //       image: data,
-    //       message,
-    //     }),
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //     },
-    //   }).then((r) => r.json());
-    //   console.log(nftMetadata);
-    // }}
+  const [durl, setDurl] = useState();
+
+  const onClickSend = async () => {
+    const dataUrl = canvas.current.getDataURL('png', true);
+    const blob = await fetch(dataUrl).then((res) => res.blob());
+
+    const nft = {
+      image: blob,
+      name: 'Web3Love Letter',
+      description:
+        "Give the gift of web3 this Valentine's day to your favourite person",
+      properties: {
+        recipient,
+        message,
+      },
+    };
+
+    client.store(nft).then((s) => {
+      console.log(s);
+    });
   };
 
   const onClickReset = () => {
     canvas.current.clear();
   };
+
   const [message, setMessage] = useState('');
   const [recipient, setRecipient] = useState('');
 
@@ -83,7 +87,11 @@ export default function HomePage() {
             />
 
             <div className='absolute top-16 right-24'>
-              <img src='/images/envelope_stamp.png' alt='' />
+              <img
+                src='/images/envelope_stamp.png'
+                alt=''
+                ref={postcardImage}
+              />
             </div>
 
             <div className='absolute top-32 left-32 rounded-md border-2 border-black bg-transparent'>
@@ -91,6 +99,17 @@ export default function HomePage() {
                 onChange={(e) => {
                   if (canvas.current) {
                     const ctx = canvas.current.ctx.drawing;
+                    canvas.current.ctx.drawing.drawImage(
+                      canvas.current.canvas.grid,
+                      0,
+                      0
+                    );
+                    canvas.current.ctx.drawing.drawImage(
+                      postcardImage.current,
+                      0,
+                      0
+                    );
+
                     ctx.clearRect(100, 100, 500, 500);
                     ctx.font = '24px serif';
                     wrapText(ctx, e.target.value, 150, 170, 400, 24);

@@ -13,8 +13,8 @@ async function storeNft(
   const buff = Buffer.from(image, 'base64url');
 
   const nft = {
-    image: new File([buff], recipientAddress + '.jpeg', {
-      type: 'image/jpeg',
+    image: new File([buff], recipientAddress + '.png', {
+      type: 'image/png',
     }),
     name: 'Web3Love Letter',
     description:
