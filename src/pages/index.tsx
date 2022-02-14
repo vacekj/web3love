@@ -52,9 +52,7 @@ export default function HomePage() {
               hideGrid={true}
               canvasHeight={400}
               canvasWidth={800}
-              imgSrc={
-                'https://www.action-mailing.com/wp-content/uploads/2020/05/designing-a-postcard-1200x900.jpg'
-              }
+              imgSrc={'/images/envelope_background.jpg'}
               ref={canvas}
             />
           </div>
