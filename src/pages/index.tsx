@@ -8,7 +8,7 @@ import CanvasDraw from 'react-canvas-draw';
 import ResetCanvasButton from '@/components/ResetCanvasButton';
 
 export default function HomePage() {
-  const canvas = useRef();
+  const canvas = useRef<HTMLCanvasElement | null>(null);
   const { user } = useMoralis();
 
   const { getNFTBalances, data } = useNFTBalances({
@@ -88,11 +88,21 @@ export default function HomePage() {
 
             <div className='absolute top-32 left-32 rounded-md border-2 border-black bg-transparent'>
               <textarea
+                onChange={(e) => {
+                  if (canvas.current) {
+                    const ctx = canvas.current.ctx.drawing;
+                    ctx.clearRect(100, 100, 500, 500);
+                    ctx.font = '24px serif';
+                    wrapText(ctx, e.target.value, 150, 170, 400, 24);
+                    // ctx.fillText(e.target.value, 150, 150);
+                    setMessage(e.target.value);
+                  }
+                }}
                 id=''
                 name=''
                 rows={6}
                 cols={30}
-                className='bg-transparent text-2xl'
+                className='bg-transparent text-2xl opacity-0'
               />
             </div>
           </div>
@@ -117,3 +127,29 @@ export default function HomePage() {
     </main>
   );
 }
+
+const wrapText = (
+  ctx: any,
+  text: string,
+  x: number,
+  y: number,
+  maxWidth: number,
+  lineHeight: number
+) => {
+  const words = text.split(' ');
+  let line = '';
+  // @ts-ignore
+  for (const [index, w] of words.entries()) {
+    const testLine = line + w + ' ';
+    const metrics = ctx.measureText(testLine);
+    const testWidth = metrics.width;
+    if (testWidth > maxWidth && index > 0) {
+      ctx.fillText(line, x, y);
+      line = w + ' ';
+      y += lineHeight;
+    } else {
+      line = testLine;
+    }
+  }
+  ctx.fillText(line, x, y);
+};
