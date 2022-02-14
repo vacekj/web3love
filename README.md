@@ -8,4 +8,4 @@
 4. Call the mint function with the current address as caller and the IPFS JSON metadata link as tokenUri.
 
 # Todo
-- Finish postcard and set it as background for the canvas. Somehow restrict the area that the user can draw on.
+Somehow restrict the area that the user can draw on.

@@ -19,6 +19,7 @@ export default function HomePage() {
 
   const { getNFTBalances, data } = useNFTBalances({
     chain: 'polygon',
+    // TODO: change this to the deployed contract address
     // address: '0x72B6Dc1003E154ac71c76D3795A3829CfD5e33b9',
   });
   useEffect(() => {
@@ -30,11 +31,14 @@ export default function HomePage() {
   const postcardImage = useRef();
 
   const { data: nftData, runContractFunction: mintNft } = useApiContract({
+    // TODO: change this to the deployed contract address
     address: '0x72B6Dc1003E154ac71c76D3795A3829CfD5e33b9',
     functionName: 'mint',
+    /* TODO: change the ABI */
     abi,
     params: {
       to: address.current,
+      tokenUri: '' /*TODO: the token metadata Uri returned from line 63*/,
     },
   });
 
@@ -93,10 +97,10 @@ export default function HomePage() {
 
               <div className='absolute top-16 right-24'>
                 <img
-                src='/images/envelope_stamp.png'
-                alt=''
-                ref={postcardImage}
-              />
+                  src='/images/envelope_stamp.png'
+                  alt=''
+                  ref={postcardImage}
+                />
               </div>
 
               <div className='absolute top-32 left-32 rounded-md border-2 border-black bg-transparent'>
@@ -105,41 +109,45 @@ export default function HomePage() {
                     if (canvas.current) {
                       const ctx = canvas.current.ctx.drawing;
                       canvas.current.ctx.drawing.drawImage(
-                      canvas.current.canvas.grid,
-                      0,
-                      0
-                    );
-                    canvas.current.ctx.drawing.drawImage(
-                      postcardImage.current,
-                      0,
-                      0
-                    );
+                        canvas.current.canvas.grid,
+                        0,
+                        0
+                      );
+                      canvas.current.ctx.drawing.drawImage(
+                        postcardImage.current,
+                        0,
+                        0
+                      );
 
-                    ctx.clearRect(100, 100, 500, 500);
-                    ctx.font = '24px serif';
-                    wrapText(ctx, e.target.value, 150, 170, 400, 24);
-                    // ctx.fillText(e.target.value, 150, 150);
-                    setMessage(e.target.value);
-                  }
-                }}
-                id=''
-                name=''
-                rows={6}
-                cols={30}
-                className='bg-transparent text-2xl opacity-0'
-              />
+                      ctx.clearRect(100, 100, 500, 500);
+                      ctx.font = '24px serif';
+                      wrapText(ctx, e.target.value, 150, 170, 400, 24);
+                      // ctx.fillText(e.target.value, 150, 150);
+                      setMessage(e.target.value);
+                    }
+                  }}
+                  id=''
+                  name=''
+                  rows={6}
+                  cols={30}
+                  className='bg-transparent text-2xl opacity-0'
+                />
+              </div>
             </div>
-          </div>
-          <div className='mt-4 flex flex-row justify-around'>
-            <div className='flex justify-center'>
-              <ResetCanvasButton onClick={onClickReset} />
-            </div>
-            <div className='flex justify-center'>
-              <SendMessage onClick={onClickSend} /></div>
+            <div className='mt-4 flex flex-row justify-around'>
+              <div className='flex justify-center'>
+                <ResetCanvasButton onClick={onClickReset} />
+              </div>
+              <div className='flex justify-center'>
+                <SendMessage onClick={onClickSend} />
+              </div>
             </div>
             <div>
               <div className='mt-8 text-left text-2xl text-white'>
                 Your messages:
+                {data?.result?.map((r) => (
+                  <img src={r.image!} />
+                ))}
               </div>
             </div>
           </div>
