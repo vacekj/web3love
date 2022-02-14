@@ -82,6 +82,7 @@ export default function HomePage() {
                 canvasWidth={1024}
                 imgSrc={'/images/envelope_background.jpg'}
                 backgroundImage={'/images/envelope_background.jpg'}
+                hideInterface={true}
                 ref={canvas}
                 className={'bg-transparent'}
               />
