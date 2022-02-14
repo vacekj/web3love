@@ -104,6 +104,11 @@ export default function HomePage() {
               <SendMessage onClick={onClickSend} />
             </div>
           </div>
+          <div>
+            <div className='mt-8 text-left text-2xl text-white'>
+              Your messages:
+            </div>
+          </div>
         </div>
         <footer className='m-4 text-2xl text-black'>
           © {new Date().getFullYear()} By{" Jessi's hackers"}

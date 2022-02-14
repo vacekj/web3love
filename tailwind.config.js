@@ -7,6 +7,7 @@ module.exports = {
     extend: {
       fontFamily: {
         primary: ['Inter', ...fontFamily.sans],
+        Quintessential: ['Quintessential'],
       },
       colors: {
         coral: {
