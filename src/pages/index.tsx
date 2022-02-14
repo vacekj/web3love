@@ -6,6 +6,8 @@ import SendMessage from '@/components/SendMessage';
 import abi from '../nftContractAbi';
 import CanvasDraw from 'react-canvas-draw';
 import ResetCanvasButton from '@/components/ResetCanvasButton';
+import Seo from '@/components/Seo';
+import Layout from '@/components/layout/Layout';
 import { NFTStorage } from 'nft.storage';
 
 const API_KEY = process.env.NEXT_PUBLIC_NFT_STORAGE_API_KEY;
@@ -66,40 +68,43 @@ export default function HomePage() {
   const [recipient, setRecipient] = useState('');
 
   return (
-    <main className=''>
-      <div className='layout flex min-h-screen flex-col items-center text-center'>
-        <div className='mt-16 rounded-md bg-orange-100 py-8 px-4 text-2xl'>
-          Welcome to Web3 Love
-        </div>
-        <div>{user?.get('ethAddress')}</div>
-        <ConnectButton />
+    <Layout>
+      <Seo />
+      <main className=''>
+        <div className='layout flex min-h-screen flex-col items-center text-center'>
+          <div className='mt-16 rounded-md bg-orange-100 py-8 px-4 text-2xl'>
+            Welcome to Web3 Love
+          </div>
+          <div>{user?.get('ethAddress')}</div>
+          <ConnectButton />
 
-        <div className='mx-auto mt-8 flex flex-col justify-start rounded-md'>
-          <div className='relative mt-8 w-full'>
-            <CanvasDraw
-              hideGrid={true}
-              canvasHeight={697}
-              canvasWidth={1024}
-              imgSrc={'/images/envelope_background.jpg'}
-              backgroundImage={'/images/envelope_background.jpg'}
-              ref={canvas}
-              className={'bg-transparent'}
-            />
+          <div className='mx-auto mt-8 flex flex-col justify-start rounded-md'>
+            <div className='relative mt-8 w-full'>
+              <CanvasDraw
+                hideGrid={true}
+                canvasHeight={697}
+                canvasWidth={1024}
+                imgSrc={'/images/envelope_background.jpg'}
+                backgroundImage={'/images/envelope_background.jpg'}
+                hideInterface={true}
+                ref={canvas}
+                className={'bg-transparent'}
+              />
 
-            <div className='absolute top-16 right-24'>
-              <img
+              <div className='absolute top-16 right-24'>
+                <img
                 src='/images/envelope_stamp.png'
                 alt=''
                 ref={postcardImage}
               />
-            </div>
+              </div>
 
-            <div className='absolute top-32 left-32 rounded-md border-2 border-black bg-transparent'>
-              <textarea
-                onChange={(e) => {
-                  if (canvas.current) {
-                    const ctx = canvas.current.ctx.drawing;
-                    canvas.current.ctx.drawing.drawImage(
+              <div className='absolute top-32 left-32 rounded-md border-2 border-black bg-transparent'>
+                <textarea
+                  onChange={(e) => {
+                    if (canvas.current) {
+                      const ctx = canvas.current.ctx.drawing;
+                      canvas.current.ctx.drawing.drawImage(
                       canvas.current.canvas.grid,
                       0,
                       0
@@ -130,15 +135,20 @@ export default function HomePage() {
               <ResetCanvasButton onClick={onClickReset} />
             </div>
             <div className='flex justify-center'>
-              <SendMessage onClick={onClickSend} />
+              <SendMessage onClick={onClickSend} /></div>
+            </div>
+            <div>
+              <div className='mt-8 text-left text-2xl text-white'>
+                Your messages:
+              </div>
             </div>
           </div>
+          <footer className='m-4 text-2xl text-black'>
+            © {new Date().getFullYear()} By{" Jessi's hackers"}
+          </footer>
         </div>
-        <footer className='m-4 text-2xl text-black'>
-          © {new Date().getFullYear()} By{" Jessi's hackers"}
-        </footer>
-      </div>
-    </main>
+      </main>
+    </Layout>
   );
 }
 
