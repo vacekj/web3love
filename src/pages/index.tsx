@@ -82,6 +82,10 @@ export default function HomePage() {
               className={'bg-transparent'}
             />
 
+            <div className='absolute top-16 right-24'>
+              <img src='/images/envelope_stamp.png' alt='' />
+            </div>
+
             <div className='absolute top-32 left-32 rounded-md border-2 border-black bg-transparent'>
               <textarea
                 id=''
