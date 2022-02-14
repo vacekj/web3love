@@ -5,7 +5,7 @@ import ConnectButton from '@/components/ConnectButton';
 import { useApiContract, useMoralis, useNFTBalances } from 'react-moralis';
 import SendMessage from '@/components/SendMessage';
 import abi from '../nftContractAbi';
-import CanvasDraw from "react-canvas-draw";
+import CanvasDraw from 'react-canvas-draw';
 
 export default function HomePage() {
   const canvas = useRef();
@@ -59,12 +59,12 @@ export default function HomePage() {
           <div className='flex justify-center'>
             <SendMessage
               onClick={() => {
-                fetch("/api/upload", {
-                  method: "POST",
+                fetch('/api/upload', {
+                  method: 'POST',
                   body: JSON.stringify({
-                    recipient:
-                  })
-                })
+                    recipient: '',
+                  }),
+                });
               }}
             />
           </div>
