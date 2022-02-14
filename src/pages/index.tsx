@@ -34,7 +34,7 @@ export default function HomePage() {
         <div>{user?.get('ethAddress')}</div>
         <ConnectButton />
 
-        <div className='mx-auto mt-8 flex w-4/5 flex-col justify-start rounded-md bg-white p-4'>
+        <div className='mx-auto mt-8 flex flex-col justify-start rounded-md bg-white p-4'>
           <div className='text-left'>To:</div>
           <input
             type='addres'
@@ -47,13 +47,14 @@ export default function HomePage() {
             className='h-32 rounded-md bg-orange-300 p-2'
             placeholder='Enter the message here'
           />
-          <div className='w-full'>
+          <div className='mt-8 w-full'>
             <CanvasDraw
               hideGrid={true}
-              canvasHeight={400}
-              canvasWidth={800}
+              canvasHeight={697}
+              canvasWidth={1024}
               imgSrc={'/images/envelope_background.jpg'}
               ref={canvas}
+              className={'bg-contain'}
             />
           </div>
           <div className='flex justify-center'>
