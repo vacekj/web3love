@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { useEffect, useRef } from 'react';
-import { ReactSketchCanvas } from 'react-sketch-canvas';
 import ConnectButton from '@/components/ConnectButton';
 import { useApiContract, useMoralis, useNFTBalances } from 'react-moralis';
 import SendMessage from '@/components/SendMessage';
@@ -53,6 +52,9 @@ export default function HomePage() {
               hideGrid={true}
               canvasHeight={400}
               canvasWidth={800}
+              imgSrc={
+                'https://www.action-mailing.com/wp-content/uploads/2020/05/designing-a-postcard-1200x900.jpg'
+              }
               ref={canvas}
             />
           </div>
@@ -71,7 +73,6 @@ export default function HomePage() {
           <div>
             Your messages:
             {data?.result?.map((r) => {
-              console.log(r);
               return <img className={'h-32 w-32'} src={r.metadata?.image} />;
             })}
           </div>
