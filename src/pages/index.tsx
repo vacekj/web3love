@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { useEffect, useRef } from 'react';
-import CanvasDraw from 'react-canvas-draw';
+import { ReactSketchCanvas } from 'react-sketch-canvas';
 import ConnectButton from '@/components/ConnectButton';
 import { useApiContract, useMoralis, useNFTBalances } from 'react-moralis';
 import SendMessage from '@/components/SendMessage';
 import abi from '../nftContractAbi';
+import CanvasDraw from "react-canvas-draw";
 
 export default function HomePage() {
   const canvas = useRef();
