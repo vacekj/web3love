@@ -26,7 +26,7 @@ export default function HomePage() {
   });
 
   return (
-    <main className='bg-red-700'>
+    <main className=''>
       <div className='layout flex min-h-screen flex-col items-center text-center'>
         <div className='mt-16 rounded-md bg-orange-100 py-8 px-4 text-2xl'>
           Welcome to Web3 Love
