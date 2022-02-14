@@ -5,6 +5,7 @@ import { useApiContract, useMoralis, useNFTBalances } from 'react-moralis';
 import SendMessage from '@/components/SendMessage';
 import abi from '../nftContractAbi';
 import CanvasDraw from 'react-canvas-draw';
+import ResetCanvasButton from '@/components/ResetCanvasButton';
 
 export default function HomePage() {
   const canvas = useRef();
@@ -25,6 +26,20 @@ export default function HomePage() {
     params: {},
   });
 
+  const onClickSend = () => {
+    console.log(canvas.current.getDataURL());
+    // fetch('/api/upload', {
+    //   method: 'POST',
+    //   body: JSON.stringify({
+    //     recipient: '',
+    //   }),
+    // });
+  };
+
+  const onClickReset = () => {
+    canvas.current.clear();
+  };
+
   return (
     <main className=''>
       <div className='layout flex min-h-screen flex-col items-center text-center'>
@@ -35,18 +50,6 @@ export default function HomePage() {
         <ConnectButton />
 
         <div className='mx-auto mt-8 flex flex-col justify-start rounded-md bg-white p-4'>
-          <div className='text-left'>To:</div>
-          <input
-            type='addres'
-            className='rounded-md bg-orange-300 p-2'
-            placeholder='Enter the recipient address here'
-          />
-          <div className='mt-4 text-left'>Message:</div>
-          <input
-            type='message'
-            className='h-32 rounded-md bg-orange-300 p-2'
-            placeholder='Enter the message here'
-          />
           <div className='relative mt-8 w-full'>
             <CanvasDraw
               hideGrid={true}
@@ -57,32 +60,33 @@ export default function HomePage() {
               className={'bg-contain'}
             />
 
-            <input
-              type='text'
-              placeholder='hello world'
-              className='absolute top-32 left-32 bg-green-800'
-            />
+            <div className='absolute top-32 left-32 rounded-md border-2 border-black bg-transparent'>
+              <textarea
+                id=''
+                name=''
+                rows={6}
+                cols={30}
+                className='bg-transparent text-2xl'
+              />
+            </div>
           </div>
-          <div className='flex justify-center'>
-            <SendMessage
-              onClick={() => {
-                fetch('/api/upload', {
-                  method: 'POST',
-                  body: JSON.stringify({
-                    recipient: '',
-                  }),
-                });
-              }}
-            />
+          <div className='flex flex-row justify-around'>
+            <div className='flex justify-center'>
+              <SendMessage onClick={onClickSend} />
+            </div>
+            <div className='flex justify-center'>
+              <ResetCanvasButton onClick={onClickReset} />
+            </div>
           </div>
-          <div>
+
+          {/* <div>
             Your messages:
             {data?.result?.map((r) => {
               return <img className={'h-32 w-32'} src={r.metadata?.image} />;
             })}
-          </div>
+          </div> */}
         </div>
-        <footer className='absolute bottom-2 text-gray-700'>
+        <footer className='m-4 text-2xl text-black'>
           © {new Date().getFullYear()} By{" Jessi's hackers"}
         </footer>
       </div>
