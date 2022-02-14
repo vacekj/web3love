@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import ConnectButton from '@/components/ConnectButton';
 import { useApiContract, useMoralis, useNFTBalances } from 'react-moralis';
 import SendMessage from '@/components/SendMessage';
@@ -17,13 +17,17 @@ export default function HomePage() {
   });
   useEffect(() => {
     getNFTBalances();
+    address.current = user?.get('ethAddress');
   }, [user]);
+  const address = useRef<string | null>();
 
   const { data: nftData, runContractFunction: mintNft } = useApiContract({
     address: '0x72B6Dc1003E154ac71c76D3795A3829CfD5e33b9',
     functionName: 'mint',
     abi,
-    params: {},
+    params: {
+      to: address.current,
+    },
   });
 
   const onClickSend = () => {
@@ -34,11 +38,28 @@ export default function HomePage() {
     //     recipient: '',
     //   }),
     // });
+    //   const data = await canvas.current?.exportImage('jpeg');
+    //   console.log(data);
+    //   const nftMetadata = await fetch('/api/upload', {
+    //     method: 'POST',
+    //     body: JSON.stringify({
+    //       recipient,
+    //       image: data,
+    //       message,
+    //     }),
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //     },
+    //   }).then((r) => r.json());
+    //   console.log(nftMetadata);
+    // }}
   };
 
   const onClickReset = () => {
     canvas.current.clear();
   };
+  const [message, setMessage] = useState('');
+  const [recipient, setRecipient] = useState('');
 
   return (
     <main className=''>
@@ -56,8 +77,9 @@ export default function HomePage() {
               canvasHeight={697}
               canvasWidth={1024}
               imgSrc={'/images/envelope_background.jpg'}
+              backgroundImage={'/images/envelope_background.jpg'}
               ref={canvas}
-              className={'bg-contain'}
+              // className={'bg-contain'}
             />
 
             <div className='absolute top-32 left-32 rounded-md border-2 border-black bg-transparent'>
@@ -78,13 +100,6 @@ export default function HomePage() {
               <ResetCanvasButton onClick={onClickReset} />
             </div>
           </div>
-
-          {/* <div>
-            Your messages:
-            {data?.result?.map((r) => {
-              return <img className={'h-32 w-32'} src={r.metadata?.image} />;
-            })}
-          </div> */}
         </div>
         <footer className='m-4 text-2xl text-black'>
           © {new Date().getFullYear()} By{" Jessi's hackers"}
