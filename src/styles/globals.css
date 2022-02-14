@@ -74,6 +74,11 @@
   }
   /* #endregion  /**======== Typography =========== */
 
+  body {
+    background-image: url('/images/bg_pattern.png');
+    @apply bg-cover;
+  }
+
   .layout {
     /* 1100px */
     max-width: 68.75rem;
