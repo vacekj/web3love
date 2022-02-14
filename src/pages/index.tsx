@@ -23,6 +23,10 @@ export default function HomePage() {
     // address: '0x72B6Dc1003E154ac71c76D3795A3829CfD5e33b9',
   });
   useEffect(() => {
+    canvas.current.ctx.drawing.drawImage(canvas.current.canvas.grid, 0, 0);
+  }, [canvas]);
+
+  useEffect(() => {
     getNFTBalances();
     address.current = user?.get('ethAddress');
   }, [user]);
@@ -108,18 +112,15 @@ export default function HomePage() {
                   onChange={(e) => {
                     if (canvas.current) {
                       const ctx = canvas.current.ctx.drawing;
-                      canvas.current.ctx.drawing.drawImage(
-                        canvas.current.canvas.grid,
-                        0,
-                        0
-                      );
-                      canvas.current.ctx.drawing.drawImage(
-                        postcardImage.current,
-                        0,
-                        0
-                      );
 
-                      ctx.clearRect(100, 100, 500, 500);
+                      // canvas.current.ctx.drawing.drawImage(
+                      //   postcardImage.current,
+                      //   0,
+                      //   0
+                      // );
+
+                      /* TODO: change coordinates here*/
+                      ctx.clearRect(100, 100, 450, 250);
                       ctx.font = '24px serif';
                       wrapText(ctx, e.target.value, 150, 170, 400, 24);
                       // ctx.fillText(e.target.value, 150, 150);
