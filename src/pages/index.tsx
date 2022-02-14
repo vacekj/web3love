@@ -70,7 +70,7 @@ export default function HomePage() {
         <div>{user?.get('ethAddress')}</div>
         <ConnectButton />
 
-        <div className='mx-auto mt-8 flex flex-col justify-start rounded-md bg-white p-4'>
+        <div className='mx-auto mt-8 flex flex-col justify-start rounded-md'>
           <div className='relative mt-8 w-full'>
             <CanvasDraw
               hideGrid={true}
@@ -79,7 +79,7 @@ export default function HomePage() {
               imgSrc={'/images/envelope_background.jpg'}
               backgroundImage={'/images/envelope_background.jpg'}
               ref={canvas}
-              // className={'bg-contain'}
+              className={'bg-transparent'}
             />
 
             <div className='absolute top-32 left-32 rounded-md border-2 border-black bg-transparent'>
@@ -92,12 +92,12 @@ export default function HomePage() {
               />
             </div>
           </div>
-          <div className='flex flex-row justify-around'>
-            <div className='flex justify-center'>
-              <SendMessage onClick={onClickSend} />
-            </div>
+          <div className='mt-4 flex flex-row justify-around'>
             <div className='flex justify-center'>
               <ResetCanvasButton onClick={onClickReset} />
+            </div>
+            <div className='flex justify-center'>
+              <SendMessage onClick={onClickSend} />
             </div>
           </div>
         </div>
