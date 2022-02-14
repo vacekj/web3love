@@ -47,7 +47,7 @@ export default function HomePage() {
             className='h-32 rounded-md bg-orange-300 p-2'
             placeholder='Enter the message here'
           />
-          <div className='mt-8 w-full'>
+          <div className='relative mt-8 w-full'>
             <CanvasDraw
               hideGrid={true}
               canvasHeight={697}
@@ -55,6 +55,12 @@ export default function HomePage() {
               imgSrc={'/images/envelope_background.jpg'}
               ref={canvas}
               className={'bg-contain'}
+            />
+
+            <input
+              type='text'
+              placeholder='hello world'
+              className='absolute top-32 left-32 bg-green-800'
             />
           </div>
           <div className='flex justify-center'>
