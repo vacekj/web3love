@@ -17,11 +17,7 @@ export default function HomePage() {
   const canvas = useRef<HTMLCanvasElement | null>(null);
   const { user } = useMoralis();
 
-  const { getNFTBalances, data } = useNFTBalances({
-    chain: 'polygon',
-    // TODO: change this to the deployed contract address
-    // address: '0x72B6Dc1003E154ac71c76D3795A3829CfD5e33b9',
-  });
+  const { getNFTBalances, data } = useNFTBalances();
   useEffect(() => {
     if (canvas.current.canvas.grid) {
     }
@@ -30,6 +26,7 @@ export default function HomePage() {
   useEffect(() => {
     getNFTBalances();
     address.current = user?.get('ethAddress');
+    updateCanvas();
   }, [user]);
   const address = useRef<string | null>();
 
@@ -46,8 +43,6 @@ export default function HomePage() {
       tokenUri: '' /*TODO: the token metadata Uri returned from line 63*/,
     },
   });
-
-  const [durl, setDurl] = useState();
 
   const onClickSend = async () => {
     const dataUrl = canvas.current.getDataURL('png', true);
@@ -75,6 +70,26 @@ export default function HomePage() {
 
   const [message, setMessage] = useState('');
   const [recipient, setRecipient] = useState('');
+
+  useEffect(() => {
+    updateCanvas();
+  }, [user, message, recipient]);
+
+  const updateCanvas = () => {
+    if (canvas.current) {
+      const ctx = canvas.current.ctx.drawing;
+
+      /* TODO: change coordinates here*/
+
+      ctx.clearRect(100, 100, 450, 250);
+      ctx.font = '24px serif';
+      canvas.current.ctx.drawing.drawImage(canvas.current.canvas.grid, 0, 0);
+      canvas.current.ctx.drawing.drawImage(canvas.current.canvas.drawing, 0, 0);
+      wrapText(ctx, message, 150, 170, 400, 24);
+      wrapText(ctx, 'From: ' + user.get('ethAddress'), 150, 480, 400, 24);
+      wrapText(ctx, 'To: ' + recipient, 150, 550, 400, 24);
+    }
+  };
 
   return (
     <Layout>
@@ -116,27 +131,7 @@ export default function HomePage() {
               <div className='absolute top-32 left-32 rounded-md border-2 border-black bg-transparent'>
                 <textarea
                   onChange={(e) => {
-                    if (canvas.current) {
-                      const ctx = canvas.current.ctx.drawing;
-
-                      // canvas.current.ctx.drawing.drawImage(
-                      //   postcardImage.current,
-                      //   0,
-                      //   0
-                      // );
-
-                      /* TODO: change coordinates here*/
-
-                      ctx.clearRect(100, 100, 450, 250);
-                      ctx.font = '24px serif';
-                      canvas.current.ctx.drawing.drawImage(
-                        canvas.current.canvas.grid,
-                        0,
-                        0
-                      );
-                      wrapText(ctx, e.target.value, 150, 170, 400, 24);
-                      setMessage(e.target.value);
-                    }
+                    setMessage(e.target.value);
                   }}
                   id=''
                   name=''
@@ -150,6 +145,14 @@ export default function HomePage() {
               <div className='flex justify-center'>
                 <ResetCanvasButton onClick={onClickReset} />
               </div>
+              <input
+                className={'w-64'}
+                placeholder={'0x9795ECEA19A467458B6e4095265f9404d1B771C7'}
+                value={recipient}
+                onChange={(e) => {
+                  setRecipient(e.target.value);
+                }}
+              />
               <div className='flex justify-center'>
                 <SendMessage onClick={onClickSend} />
               </div>
