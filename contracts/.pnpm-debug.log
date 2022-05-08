@@ -6,14 +6,14 @@
     "errno": 1,
     "code": "ELIFECYCLE",
     "pkgid": "web3love@0.1.0",
-    "stage": "forge:deploy",
-    "script": "source .env.local && cd ./contracts && forge create --private-key $FORGE_PRIVATE_KEY contracts/web3love.sol:Web3Love",
+    "stage": "start",
+    "script": "next start",
     "pkgname": "web3love",
     "err": {
       "name": "pnpm",
-      "message": "web3love@0.1.0 forge:deploy: `source .env.local && cd ./contracts && forge create --private-key $FORGE_PRIVATE_KEY contracts/web3love.sol:Web3Love`\nExit status 1",
+      "message": "web3love@0.1.0 start: `next start`\nExit status 1",
       "code": "ELIFECYCLE",
-      "stack": "pnpm: web3love@0.1.0 forge:deploy: `source .env.local && cd ./contracts && forge create --private-key $FORGE_PRIVATE_KEY contracts/web3love.sol:Web3Love`\nExit status 1\n    at EventEmitter.<anonymous> (/opt/homebrew/Cellar/node/18.0.0/pnpm-global/5/node_modules/.pnpm/pnpm@7.0.0/node_modules/pnpm/dist/pnpm.cjs:106732:20)\n    at EventEmitter.emit (events.js:400:28)\n    at ChildProcess.<anonymous> (/opt/homebrew/Cellar/node/18.0.0/pnpm-global/5/node_modules/.pnpm/pnpm@7.0.0/node_modules/pnpm/dist/pnpm.cjs:93301:18)\n    at ChildProcess.emit (events.js:400:28)\n    at maybeClose (internal/child_process.js:1058:16)\n    at Process.ChildProcess._handle.onexit (internal/child_process.js:293:5)"
+      "stack": "pnpm: web3love@0.1.0 start: `next start`\nExit status 1\n    at EventEmitter.<anonymous> (/opt/homebrew/Cellar/pnpm/7.0.1/libexec/lib/node_modules/pnpm/dist/pnpm.cjs:106731:20)\n    at EventEmitter.emit (node:events:527:28)\n    at ChildProcess.<anonymous> (/opt/homebrew/Cellar/pnpm/7.0.1/libexec/lib/node_modules/pnpm/dist/pnpm.cjs:93300:18)\n    at ChildProcess.emit (node:events:527:28)\n    at maybeClose (node:internal/child_process:1090:16)\n    at ChildProcess._handle.onexit (node:internal/child_process:302:5)"
     }
   }
 }

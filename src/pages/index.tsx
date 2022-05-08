@@ -1,24 +1,7 @@
-import Card from "@/components/Card";
-import { useTotalCards } from "@/hooks";
-import abi from "@/nftContractAbi.json";
-import {
-  Avatar,
-  AvatarGroup,
-  Box,
-  Button,
-  Container,
-  Flex,
-  Heading,
-  Icon,
-  IconProps,
-  Input,
-  SimpleGrid,
-  Stack,
-  Text,
-  useBreakpointValue,
-} from "@chakra-ui/react";
-import { useNFTBalances } from "react-moralis";
-import { useContractRead } from "wagmi";
+import {useTotalCards} from "@/hooks";
+import {Box, Container, Heading, SimpleGrid, Stack, Text} from "@chakra-ui/react";
+import dynamic from "next/dynamic";
+const Card = dynamic(() => import("@/components/Card"));
 
 export default function Index() {
   const { data: totalSupplyData } = useTotalCards();

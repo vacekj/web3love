@@ -6,15 +6,16 @@ import "../lib/openzeppelin-contracts/contracts/token/ERC721/extensions/ERC721En
 import "../lib/openzeppelin-contracts/contracts/utils/Counters.sol";
 import "../lib/openzeppelin-contracts/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "../lib/openzeppelin-contracts/contracts/access/Ownable.sol";
+import "../lib/openzeppelin-contracts/contracts/token/ERC721/extensions/ERC721Pausable.sol";
 
-contract Web3Love is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
+contract Web3Love is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable, ERC721Pausable {
     using Counters for Counters.Counter;
 
     Counters.Counter private _tokenIdCounter;
 
     constructor() ERC721("Web3Love", "W3L") {}
 
-    function safeMint(address to, string memory uri) public onlyOwner {
+    function safeMint(address to, string memory uri) public {
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
         _safeMint(to, tokenId);
@@ -22,10 +23,9 @@ contract Web3Love is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
     }
 
     // The following functions are overrides required by Solidity.
-
     function _beforeTokenTransfer(address from, address to, uint256 tokenId)
         internal
-        override(ERC721, ERC721Enumerable)
+        override(ERC721, ERC721Enumerable, ERC721Pausable)
     {
         super._beforeTokenTransfer(from, to, tokenId);
     }

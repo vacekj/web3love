@@ -1,8 +1,8 @@
-import { ethers, UnsignedTransaction, VoidSigner } from "ethers";
-import type { NextApiRequest, NextApiResponse } from "next";
-import { Blob, NFTStorage } from "nft.storage";
-const API_KEY = process.env.NEXT_NFT_STORAGE_API_KEY;
+import {ethers, VoidSigner} from "ethers";
+import type {NextApiRequest, NextApiResponse} from "next";
+import {Blob, NFTStorage} from "nft.storage";
 import nftContractAbi from "@/nftContractAbi.json";
+const API_KEY = process.env.NEXT_NFT_STORAGE_API_KEY;
 
 const client = new NFTStorage({ token: API_KEY! });
 export const isDevelopmentEnvironment = process.env.NODE_ENV !== "production";
@@ -84,19 +84,25 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
     const transactionRequest = await contract.populateTransaction.safeMint(
       body.recipient,
-      "ipfs://bafyreigqlyp4fares5ymghktqeg4udbi6kap5je5g3teiuku5jpwsyeze4/metadata.json",
+      metadata.url,
     );
 
     const { from, ...unsignedTx } = transactionRequest;
 
-    console.log(unsignedTx);
     const serializedTransaction = ethers.utils.serializeTransaction(unsignedTx);
+
+    /*Make data property in metadata enumerable so it gets sent back to the client*/
+    Object.defineProperty(metadata, "data", {
+      enumerable: true,
+    });
 
     return res.status(201).json({
       success: true,
       serializedTransaction,
+      metadata,
     });
   } catch (e) {
+    console.error(e);
     return res.status(500).json(e);
   }
 };

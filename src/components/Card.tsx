@@ -1,78 +1,134 @@
-import abi from "@/nftContractAbi.json";
-import { Box, Button, Center, Image, Input, Stack, Text, useColorModeValue } from "@chakra-ui/react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { ConnectButton, useAddRecentTransaction } from "@rainbow-me/rainbowkit";
-import ethers from "ethers";
-import { parseTransaction } from "ethers/lib/utils";
-import { useCallback, useEffect, useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { useChain, useNFTBalances } from "react-moralis";
-import { useAccount, useContractRead, useNetwork, useSendTransaction } from "wagmi";
+import {Box, Button, Center, FormControl, FormErrorMessage, Image, Input, Stack, Text, useColorModeValue, useToast, } from "@chakra-ui/react";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {ConnectButton, useAddRecentTransaction} from "@rainbow-me/rainbowkit";
+import {ethers} from "ethers";
+import {parseTransaction} from "ethers/lib/utils";
+import {useCallback, useState} from "react";
+import {SubmitHandler, useForm} from "react-hook-form";
+import {useAccount, useNetwork, useSendTransaction} from "wagmi";
 import z from "zod";
-
 const IMAGE = "/images/cards/mothers-day.jpeg";
 
-const schema = z.object({
+const formSchema = z.object({
   from: z.string().min(1, { message: "Type your name please" }),
   to: z.string().min(1, { message: "Type your recipient's name please" }),
-  address: z.custom<string>((address) => ethers.utils.isAddress(address as string), {
+  address: z.custom<string>((address) => {
+    return ethers.utils.isAddress(address as string);
+  }, {
     message: "Type your recipient's Polygon address please",
   }),
 });
 
+const responseBodySchema = z.object({
+  success: z.boolean(),
+  serializedTransaction: z.string(),
+  metadata: z.object({
+    data: z.object({
+      name: z.string(),
+      description: z.string(),
+      properties: z.object({ recipient: z.string(), message: z.string(), type: z.string() }),
+    }),
+    url: z.string(),
+    ipnft: z.string(),
+  }),
+});
+
 export default function Card() {
+  const toast = useToast();
+
   const [loading, setLoading] = useState(false);
   const addRecentTransaction = useAddRecentTransaction();
   const { isLoading, sendTransactionAsync } = useSendTransaction();
   const { data: account } = useAccount();
   const { data: activeChain } = useNetwork();
-  const { register, handleSubmit, watch, formState: { errors } } = useForm<z.infer<typeof schema>>({
-    resolver: zodResolver(schema),
+  const { register, handleSubmit, formState: { errors } } = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      to: "",
+      from: "",
+      address: "",
+    },
   });
 
-  const onSubmit: SubmitHandler<z.infer<typeof schema>> = useCallback(async (data) => {
+  const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = useCallback(async (data) => {
     setLoading(true);
-    const response = await fetch("/api/upload", {
-      method: "POST",
-      body: JSON.stringify({
-        recipient: data.address,
-        signer: account?.address,
-        message: "Test message",
-        imageId: "mothers-day",
-      }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((r) => r.json())
-      .catch((e) => console.log(e));
+    try {
+      /* Send request to backend */
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        body: JSON.stringify({
+          recipient: data.address,
+          signer: account?.address,
+          message: "Test message",
+          imageId: "mothers-day",
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((r) => {
+          console.log(r);
+          if (r.ok) {
+            return r.json();
+          } else {
+            console.log(r);
+            throw r;
+          }
+        });
 
-    if (!response.success || !response.serializedTransaction) {
-      console.log(response);
-    }
+      const responseBody = responseBodySchema.parse(response);
 
-    const result = await sendTransactionAsync({
+      if (!responseBody.serializedTransaction) {
+        toast({
+          title: "Malformed response",
+          status: "error",
+          isClosable: true,
+          description: "Please refresh the page and try again",
+        });
+        return;
+      }
+
+      /* Sign and send the transaction */
+      const request = {
+        request: {
+          ...parseTransaction(response.serializedTransaction),
+          chainId: null,
+          gasLimit: 2100000,
+        },
+      };
+
       // @ts-ignore
-      request: {
-        ...parseTransaction(response.serializedTransaction),
-        chainId: activeChain?.id ?? 0,
-        gasLimit: 2100000,
-      },
-    });
+      const result = await sendTransactionAsync(request);
 
-    /* Add transaction to Rainbow transaction list */
-    addRecentTransaction({
-      hash: result.hash,
-      description: "Mint message NFT",
-    });
+      /* Add transaction to Rainbow transaction list */
+      addRecentTransaction({
+        hash: result.hash,
+        description: "Mint card NFT",
+      });
 
-    /* Wait until transaction is confirmed to stop loading */
-    await result.wait();
-    setLoading(false);
-  }, [account, activeChain]);
+      /* Wait until transaction is confirmed to stop loading */
+      await result.wait();
+      setLoading(false);
+      toast({
+        title: "Card sent!",
+        status: "success",
+        isClosable: true,
+        description: "Your card was successfully sent and should arrive in the recipient's wallet in a short while",
+      });
+    } catch (e) {
+      toast({
+        title: "An error occured",
+        status: "error",
+        isClosable: true,
+        description: JSON.stringify(e),
+      });
+      setLoading(false);
+      console.log(e);
+    }
+  }, [account, activeChain, account?.connector]);
 
   return (
-    <Center py={12} flexDirection={"column"}>
+    <Center py={12} flexDirection={"column"} as={"form"} onSubmit={handleSubmit(onSubmit)}>
       <Box
         role={"group"}
         p={6}
@@ -119,45 +175,52 @@ export default function Card() {
         <Stack
           pt={10}
           align={"flex-start"}
-          onSubmit={handleSubmit(onSubmit)}
           spacing={3}
-          as={"form"}
         >
           <Text color={"gray.500"} fontSize={"sm"} textTransform={"uppercase"}>
             from
           </Text>
-          <Input
-            {...register("from")}
-            size={"lg"}
-            variant={"unstyled"}
-            autoFocus={true}
-            placeholder={"your loving son"}
-          />
+          <FormControl isInvalid={Boolean(errors.from?.message)}>
+            <Input
+              {...register("from")}
+              size={"lg"}
+              variant={"unstyled"}
+              autoFocus={true}
+              placeholder={"your loving son"}
+            />
+            <FormErrorMessage>{errors.from?.message}</FormErrorMessage>
+          </FormControl>
 
           <Text color={"gray.500"} fontSize={"sm"} textTransform={"uppercase"}>
             to
           </Text>
-          <Input
-            {...register("to")}
-            size={"lg"}
-            variant={"unstyled"}
-            autoFocus={true}
-            placeholder={"the best mother"}
-          />
+          <FormControl isInvalid={Boolean(errors.to?.message)}>
+            <Input
+              {...register("to")}
+              size={"lg"}
+              variant={"unstyled"}
+              autoFocus={true}
+              placeholder={"your loving son"}
+            />
+            <FormErrorMessage>{errors.to?.message}</FormErrorMessage>
+          </FormControl>
 
           <Text color={"gray.500"} fontSize={"sm"} textTransform={"uppercase"}>
-            send to
+            send to address
           </Text>
-          <Input
-            isTruncated={true}
-            {...register("address")}
-            size={"lg"}
-            variant={"unstyled"}
-            placeholder={"0xa9fac1ba6c7fb0ffb44ecec01cf23d47bba924d25336defdbf782e7181fc00bd"}
-          />
+          <FormControl isInvalid={Boolean(errors.to?.message)}>
+            <Input
+              isTruncated={true}
+              {...register("address")}
+              size={"lg"}
+              variant={"unstyled"}
+              placeholder={"0xa9fac1ba6c7fb0ffb44ecec01cf23d47bba924d25336defdbf782e7181fc00bd"}
+            />
+            <FormErrorMessage>{errors.address?.message}</FormErrorMessage>
+          </FormControl>
         </Stack>
       </Box>
-      {<ConnectButton chainStatus={"none"} />}
+      <ConnectButton accountStatus={"full"} chainStatus={"full"} />
       {account && (
         <Button
           type={"submit"}
