@@ -1,37 +1,74 @@
 import abi from "@/nftContractAbi.json";
 import { Box, Button, Center, Image, Input, Stack, Text, useColorModeValue } from "@chakra-ui/react";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { ConnectButton, useAddRecentTransaction } from "@rainbow-me/rainbowkit";
+import ethers from "ethers";
 import { parseTransaction } from "ethers/lib/utils";
-import { useEffect, useState } from "react";
-import { useNFTBalances } from "react-moralis";
+import { useCallback, useEffect, useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { useChain, useNFTBalances } from "react-moralis";
 import { useAccount, useContractRead, useNetwork, useSendTransaction } from "wagmi";
+import z from "zod";
 
 const IMAGE = "/images/cards/mothers-day.jpeg";
 
+const schema = z.object({
+  from: z.string().min(1, { message: "Type your name please" }),
+  to: z.string().min(1, { message: "Type your recipient's name please" }),
+  address: z.custom<string>((address) => ethers.utils.isAddress(address as string), {
+    message: "Type your recipient's Polygon address please",
+  }),
+});
+
 export default function Card() {
   const [loading, setLoading] = useState(false);
-  const { activeChain } = useNetwork();
   const addRecentTransaction = useAddRecentTransaction();
-  const [recipient, setRecipient] = useState<string>();
-  const { data: account } = useAccount();
   const { isLoading, sendTransactionAsync } = useSendTransaction();
-
-  const {
-    getNFTBalances,
-    data: nftBalances,
-    isLoading: isLoadingNfts,
-  } = useNFTBalances({
-    address: account?.address,
-    // @ts-ignore
-    chain: `0x${activeChain?.id.toString(16)}`,
-    token_addresses: [process.env.NEXT_PUBLIC_NFT_CONTRACT!],
+  const { data: account } = useAccount();
+  const { data: activeChain } = useNetwork();
+  const { register, handleSubmit, watch, formState: { errors } } = useForm<z.infer<typeof schema>>({
+    resolver: zodResolver(schema),
   });
 
-  useEffect(() => {
-    if (account?.address) {
-      getNFTBalances();
+  const onSubmit: SubmitHandler<z.infer<typeof schema>> = useCallback(async (data) => {
+    setLoading(true);
+    const response = await fetch("/api/upload", {
+      method: "POST",
+      body: JSON.stringify({
+        recipient: data.address,
+        signer: account?.address,
+        message: "Test message",
+        imageId: "mothers-day",
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((r) => r.json())
+      .catch((e) => console.log(e));
+
+    if (!response.success || !response.serializedTransaction) {
+      console.log(response);
     }
-    console.log(activeChain?.id.toString(16));
+
+    const result = await sendTransactionAsync({
+      // @ts-ignore
+      request: {
+        ...parseTransaction(response.serializedTransaction),
+        chainId: activeChain?.id ?? 0,
+        gasLimit: 2100000,
+      },
+    });
+
+    /* Add transaction to Rainbow transaction list */
+    addRecentTransaction({
+      hash: result.hash,
+      description: "Mint message NFT",
+    });
+
+    /* Wait until transaction is confirmed to stop loading */
+    await result.wait();
+    setLoading(false);
   }, [account, activeChain]);
 
   return (
@@ -79,11 +116,18 @@ export default function Card() {
             src={IMAGE}
           />
         </Box>
-        <Stack pt={10} align={"flex-start"} spacing={3}>
+        <Stack
+          pt={10}
+          align={"flex-start"}
+          onSubmit={handleSubmit(onSubmit)}
+          spacing={3}
+          as={"form"}
+        >
           <Text color={"gray.500"} fontSize={"sm"} textTransform={"uppercase"}>
             from
           </Text>
           <Input
+            {...register("from")}
             size={"lg"}
             variant={"unstyled"}
             autoFocus={true}
@@ -94,6 +138,7 @@ export default function Card() {
             to
           </Text>
           <Input
+            {...register("to")}
             size={"lg"}
             variant={"unstyled"}
             autoFocus={true}
@@ -104,12 +149,10 @@ export default function Card() {
             send to
           </Text>
           <Input
-            required={true}
-            value={recipient}
-            onChange={(e) => setRecipient(e.target.value)}
+            isTruncated={true}
+            {...register("address")}
             size={"lg"}
             variant={"unstyled"}
-            autoFocus={true}
             placeholder={"0xa9fac1ba6c7fb0ffb44ecec01cf23d47bba924d25336defdbf782e7181fc00bd"}
           />
         </Stack>
@@ -119,44 +162,6 @@ export default function Card() {
         <Button
           type={"submit"}
           isLoading={isLoading || loading}
-          onClick={async () => {
-            setLoading(true);
-            /* Upload the NFT and get raw transaction*/
-            const response = await fetch("/api/upload", {
-              method: "POST",
-              body: JSON.stringify({
-                recipient,
-                signer: account?.address,
-                message: "Test message",
-                imageId: "mothers-day",
-              }),
-              headers: {
-                "Content-Type": "application/json",
-              },
-            })
-              .then((r) => r.json())
-              .catch((e) => console.log(e));
-
-            if (!response.success || !response.serializedTransaction) {
-              console.log(response);
-            }
-
-            const result = await sendTransactionAsync({
-              // @ts-ignore
-              request: {
-                ...parseTransaction(response.serializedTransaction),
-                chainId: activeChain?.id ?? 0,
-                gasLimit: 2100000,
-              },
-            });
-            addRecentTransaction({
-              hash: result.hash,
-              description: "Mint message NFT",
-            });
-
-            await result.wait();
-            setLoading(false);
-          }}
           size={"lg"}
           px={8}
           mt={4}

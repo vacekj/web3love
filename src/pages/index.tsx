@@ -1,4 +1,5 @@
 import Card from "@/components/Card";
+import { useTotalCards } from "@/hooks";
 import abi from "@/nftContractAbi.json";
 import {
   Avatar,
@@ -19,14 +20,10 @@ import {
 import { useNFTBalances } from "react-moralis";
 import { useContractRead } from "wagmi";
 
-export default function JoinOurTeam() {
-  const { data: nftData } = useContractRead(
-    {
-      addressOrName: process.env.NEXT_PUBLIC_NFT_CONTRACT!,
-      contractInterface: abi.abi,
-    },
-    "totalSupply"
-  );
+export default function Index() {
+  const { data: totalSupplyData } = useTotalCards();
+  const totalSupply = parseInt((totalSupplyData as unknown as string) ?? 0);
+
   return (
     <Box position={"relative"}>
       <Container
@@ -63,7 +60,8 @@ export default function JoinOurTeam() {
               bgGradient="linear(to-r, red.400,pink.400)"
               bgClip="text"
             >
-              {parseInt((nftData as unknown as string) ?? 0)}{" "}
+              {totalSupply}
+              {" "}
             </Text>
             cards sent so far
           </Text>
