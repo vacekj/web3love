@@ -8,6 +8,9 @@ specifiers:
   '@commitlint/config-conventional': ^16.2.4
   '@emotion/react': ^11.9.0
   '@emotion/styled': ^11.8.1
+  '@ethersproject/abi': ^5.0.0
+  '@ethersproject/bytes': ^5.0.0
+  '@ethersproject/providers': ^5.0.0
   '@rainbow-me/rainbowkit': ^0.1.0
   '@svgr/webpack': ^6.2.1
   '@testing-library/jest-dom': ^5.16.4
@@ -62,6 +65,9 @@ dependencies:
   '@chakra-ui/react': 1.8.8_vtrglxfea6xbixuc4tyvssxkb4
   '@emotion/react': 11.9.0_3eedoh5iyosf3m26fkjrimrxcy
   '@emotion/styled': 11.8.1_bgr3v6fsuohrsolud5p6my4gvi
+  '@ethersproject/abi': 5.6.1
+  '@ethersproject/bytes': 5.6.1
+  '@ethersproject/providers': 5.6.5
   '@rainbow-me/rainbowkit': 0.1.0_xzmuwgmywwzvtafgw6qt4yu3qa
   '@walletconnect/web3-provider': 1.7.8_@babel+core@7.17.10
   '@web3auth/web3auth': 0.10.0_cbmrbp5ohv2mzuwi35fkxcgica
@@ -91,7 +97,7 @@ devDependencies:
   '@svgr/webpack': 6.2.1
   '@testing-library/jest-dom': 5.16.4
   '@testing-library/react': 13.2.0_ef5jwxihqo6n7gxfmzogljlgcm
-  '@typechain/ethers-v5': 10.0.0_z67vmfjlze2pl7hiniqqkfbnrm
+  '@typechain/ethers-v5': 10.0.0_wt2roky7zoo3c3yeej6tk4apem
   '@types/react': 18.0.9
   '@types/react-canvas-draw': 1.1.1
   '@typescript-eslint/eslint-plugin': 5.22.0_tal4xlmvnofklupd3hwjtzfb4q
@@ -395,6 +401,8 @@ packages:
     resolution: {integrity: sha512-n2Q6i+fnJqzOaq2VkdXxy2TCPCWQZHiCo0XqmrCvDWcZQKRyZzYi4Z0yxlBuN0w+r2ZHmre+Q087DSrw3pbJDQ==}
     engines: {node: '>=6.0.0'}
     hasBin: true
+    dependencies:
+      '@babel/types': 7.17.10
 
   /@babel/plugin-bugfix-safari-id-destructuring-collision-in-function-expression/7.16.7_@babel+core@7.17.10:
     resolution: {integrity: sha512-anv/DObl7waiGEnC24O9zqL0pSuI9hljihqiDuFHC8d7/bjr/4RLGPWuc8rYOff/QPzbEPSkzG8wGG9aDuhHRg==}
@@ -3293,6 +3301,8 @@ packages:
       eventemitter3: 4.0.7
       localforage: 1.10.0
       web3-core: 1.5.2
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   /@magic-sdk/types/7.1.1:
@@ -3532,7 +3542,7 @@ packages:
       react-dom: '>=17'
       wagmi: ^0.3.2
     dependencies:
-      '@ethersproject/providers': 5.6.0
+      '@ethersproject/providers': 5.6.5
       '@vanilla-extract/css': 1.7.0
       '@vanilla-extract/dynamic': 2.0.2
       '@vanilla-extract/sprinkles': 1.4.0_@vanilla-extract+css@1.7.0
@@ -3935,6 +3945,8 @@ packages:
       '@babel/runtime': 7.17.9
       web3-eth-contract: 1.7.3
       web3-utils: 1.7.3
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   /@toruslabs/http-helpers/2.2.0_@babel+runtime@7.17.9:
@@ -4061,6 +4073,8 @@ packages:
       loglevel: 1.8.0
       once: 1.4.0
       pump: 3.0.0
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   /@toruslabs/torus.js/5.1.0_@babel+runtime@7.17.9:
@@ -4104,7 +4118,7 @@ packages:
     resolution: {integrity: sha512-eZxlbI8GZscaGS7kkc/trHTT5xgrjH3/1n2JDwusC9iahPKWMRvRjJSAN5mCXviuTGQ/lHnhvv8Q1YTpnfz9gA==}
     dev: true
 
-  /@typechain/ethers-v5/10.0.0_z67vmfjlze2pl7hiniqqkfbnrm:
+  /@typechain/ethers-v5/10.0.0_wt2roky7zoo3c3yeej6tk4apem:
     resolution: {integrity: sha512-Kot7fwAqnH96ZbI8xrRgj5Kpv9yCEdjo7mxRqrH7bYpEgijT5MmuOo8IVsdhOu7Uog4ONg7k/d5UdbAtTKUgsA==}
     peerDependencies:
       '@ethersproject/abi': ^5.0.0
@@ -4114,6 +4128,9 @@ packages:
       typechain: ^8.0.0
       typescript: '>=4.3.0'
     dependencies:
+      '@ethersproject/abi': 5.6.1
+      '@ethersproject/bytes': 5.6.1
+      '@ethersproject/providers': 5.6.5
       ethers: 5.6.5
       lodash: 4.17.21
       ts-essentials: 7.0.3_typescript@4.6.4
@@ -4932,6 +4949,8 @@ packages:
       '@babel/runtime': 7.17.9
       '@toruslabs/torus-embed': 1.22.5_@babel+runtime@7.17.9
       '@web3auth/base': 0.10.0_@babel+runtime@7.17.9
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   /@web3auth/torus-solana-adapter/0.10.0_cbmrbp5ohv2mzuwi35fkxcgica:
@@ -6449,11 +6468,21 @@ packages:
 
   /debug/2.6.9:
     resolution: {integrity: sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==}
+    peerDependencies:
+      supports-color: '*'
+    peerDependenciesMeta:
+      supports-color:
+        optional: true
     dependencies:
       ms: 2.0.0
 
   /debug/3.2.7:
     resolution: {integrity: sha512-CFjzYYAi4ThfiQvizrFQevTTXHtnCqWfe7x1AhgEscTz6ZbLbfoLRLPugTQyBth6f8ZERVUSyWHFD/7Wu4t1XQ==}
+    peerDependencies:
+      supports-color: '*'
+    peerDependenciesMeta:
+      supports-color:
+        optional: true
     dependencies:
       ms: 2.1.3
     dev: true
@@ -6934,13 +6963,14 @@ packages:
       eslint: 8.15.0
       eslint-import-resolver-node: 0.3.6
       eslint-import-resolver-typescript: 2.7.1_gwd37gqv3vjv3xlpl7ju3ag2qu
-      eslint-plugin-import: 2.26.0_eslint@8.15.0
+      eslint-plugin-import: 2.26.0_5v5qjrtguv7otneb3mumlvzpgm
       eslint-plugin-jsx-a11y: 6.5.1_eslint@8.15.0
       eslint-plugin-react: 7.29.4_eslint@8.15.0
       eslint-plugin-react-hooks: 4.5.0_eslint@8.15.0
       next: 12.1.6_talmm3uuvp6ssixt2qevhfgvue
       typescript: 4.6.4
     transitivePeerDependencies:
+      - eslint-import-resolver-webpack
       - supports-color
     dev: true
 
@@ -6949,6 +6979,8 @@ packages:
     dependencies:
       debug: 3.2.7
       resolve: 1.22.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /eslint-import-resolver-typescript/2.7.1_gwd37gqv3vjv3xlpl7ju3ag2qu:
@@ -6960,7 +6992,7 @@ packages:
     dependencies:
       debug: 4.3.4
       eslint: 8.15.0
-      eslint-plugin-import: 2.26.0_eslint@8.15.0
+      eslint-plugin-import: 2.26.0_5v5qjrtguv7otneb3mumlvzpgm
       glob: 7.2.0
       is-glob: 4.0.3
       resolve: 1.22.0
@@ -6969,27 +7001,51 @@ packages:
       - supports-color
     dev: true
 
-  /eslint-module-utils/2.7.3:
+  /eslint-module-utils/2.7.3_kvyt4kvbdmj4ueyk2ybejan4d4:
     resolution: {integrity: sha512-088JEC7O3lDZM9xGe0RerkOMd0EjFl+Yvd1jPWIkMT5u3H9+HC34mWWPnqPrN13gieT9pBOO+Qt07Nb/6TresQ==}
     engines: {node: '>=4'}
+    peerDependencies:
+      '@typescript-eslint/parser': '*'
+      eslint-import-resolver-node: '*'
+      eslint-import-resolver-typescript: '*'
+      eslint-import-resolver-webpack: '*'
+    peerDependenciesMeta:
+      '@typescript-eslint/parser':
+        optional: true
+      eslint-import-resolver-node:
+        optional: true
+      eslint-import-resolver-typescript:
+        optional: true
+      eslint-import-resolver-webpack:
+        optional: true
     dependencies:
+      '@typescript-eslint/parser': 5.22.0_hcfsmds2fshutdssjqluwm76uu
       debug: 3.2.7
+      eslint-import-resolver-node: 0.3.6
+      eslint-import-resolver-typescript: 2.7.1_gwd37gqv3vjv3xlpl7ju3ag2qu
       find-up: 2.1.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
-  /eslint-plugin-import/2.26.0_eslint@8.15.0:
+  /eslint-plugin-import/2.26.0_5v5qjrtguv7otneb3mumlvzpgm:
     resolution: {integrity: sha512-hYfi3FXaM8WPLf4S1cikh/r4IxnO6zrhZbEGz2b660EJRbuxgpDS5gkCuYgGWg2xxh2rBuIr4Pvhve/7c31koA==}
     engines: {node: '>=4'}
     peerDependencies:
+      '@typescript-eslint/parser': '*'
       eslint: ^2 || ^3 || ^4 || ^5 || ^6 || ^7.2.0 || ^8
+    peerDependenciesMeta:
+      '@typescript-eslint/parser':
+        optional: true
     dependencies:
+      '@typescript-eslint/parser': 5.22.0_hcfsmds2fshutdssjqluwm76uu
       array-includes: 3.1.5
       array.prototype.flat: 1.3.0
       debug: 2.6.9
       doctrine: 2.1.0
       eslint: 8.15.0
       eslint-import-resolver-node: 0.3.6
-      eslint-module-utils: 2.7.3
+      eslint-module-utils: 2.7.3_kvyt4kvbdmj4ueyk2ybejan4d4
       has: 1.0.3
       is-core-module: 2.9.0
       is-glob: 4.0.3
@@ -6997,6 +7053,10 @@ packages:
       object.values: 1.1.5
       resolve: 1.22.0
       tsconfig-paths: 3.14.1
+    transitivePeerDependencies:
+      - eslint-import-resolver-typescript
+      - eslint-import-resolver-webpack
+      - supports-color
     dev: true
 
   /eslint-plugin-jsx-a11y/6.5.1_eslint@8.15.0:
@@ -9715,6 +9775,8 @@ packages:
       '@magic-sdk/provider': 8.1.1_localforage@1.10.0
       '@magic-sdk/types': 7.1.1
       localforage: 1.10.0
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   /make-dir/3.1.0:
@@ -12674,6 +12736,8 @@ packages:
       web3-providers-http: 1.5.2
       web3-providers-ipc: 1.5.2
       web3-providers-ws: 1.5.2
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   /web3-core-requestmanager/1.7.3:
@@ -12685,6 +12749,8 @@ packages:
       web3-providers-http: 1.7.3
       web3-providers-ipc: 1.7.3
       web3-providers-ws: 1.7.3
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   /web3-core-subscriptions/1.5.2:
@@ -12714,6 +12780,8 @@ packages:
       web3-core-method: 1.5.2
       web3-core-requestmanager: 1.5.2
       web3-utils: 1.5.2
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   /web3-core/1.7.3:
@@ -12727,6 +12795,8 @@ packages:
       web3-core-method: 1.7.3
       web3-core-requestmanager: 1.7.3
       web3-utils: 1.7.3
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   /web3-eth-abi/1.7.3:
@@ -12749,6 +12819,8 @@ packages:
       web3-core-subscriptions: 1.7.3
       web3-eth-abi: 1.7.3
       web3-utils: 1.7.3
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   /web3-eth-iban/1.5.2:
@@ -12794,8 +12866,10 @@ packages:
       xtend: 4.0.2
     transitivePeerDependencies:
       - '@babel/core'
+      - bufferutil
       - encoding
       - supports-color
+      - utf-8-validate
     dev: false
 
   /web3-providers-http/1.5.2:
@@ -12837,6 +12911,8 @@ packages:
       eventemitter3: 4.0.4
       web3-core-helpers: 1.5.2
       websocket: 1.0.34
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   /web3-providers-ws/1.7.3:
@@ -12846,6 +12922,8 @@ packages:
       eventemitter3: 4.0.4
       web3-core-helpers: 1.7.3
       websocket: 1.0.34
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   /web3-utils/1.5.2:
@@ -12888,6 +12966,8 @@ packages:
       typedarray-to-buffer: 3.1.5
       utf-8-validate: 5.0.9
       yaeti: 0.0.6
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   /whatwg-fetch/2.0.4:
@@ -12990,6 +13070,14 @@ packages:
 
   /ws/5.2.3:
     resolution: {integrity: sha512-jZArVERrMsKUatIdnLzqvcfydI85dvd/Fp1u/VOpfdDWQ4c9qWXe+VIeAbQ5FrDwciAkr+lzofXLz3Kuf26AOA==}
+    peerDependencies:
+      bufferutil: ^4.0.1
+      utf-8-validate: ^5.0.2
+    peerDependenciesMeta:
+      bufferutil:
+        optional: true
+      utf-8-validate:
+        optional: true
     dependencies:
       async-limiter: 1.0.1
     dev: false

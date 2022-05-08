@@ -23,6 +23,9 @@
     "@chakra-ui/react": "^1.8.8",
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
+    "@ethersproject/abi": "^5.0.0",
+    "@ethersproject/bytes": "^5.0.0",
+    "@ethersproject/providers": "^5.0.0",
     "@rainbow-me/rainbowkit": "^0.1.0",
     "@walletconnect/web3-provider": "^1.7.8",
     "@web3auth/web3auth": "^0.10.0",
@@ -78,10 +81,10 @@
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx,}": [
       "eslint",
-      "dprint fmt"
+      "prettier --write ."
     ],
     "src/**/*.{json,css,scss,md}": [
-      "dprint fmt"
+      "prettier --write ."
     ]
   }
 }

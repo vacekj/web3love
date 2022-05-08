@@ -5,6 +5,7 @@ import { parseTransaction } from "ethers/lib/utils";
 import { useEffect, useState } from "react";
 import { useNFTBalances } from "react-moralis";
 import { useAccount, useContractRead, useNetwork, useSendTransaction } from "wagmi";
+
 const IMAGE = "/images/cards/mothers-day.jpeg";
 
 export default function Card() {
