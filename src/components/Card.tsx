@@ -1,46 +1,37 @@
-import nftContractAbi from "@/nftContractAbi.json";
 import abi from "@/nftContractAbi.json";
-import {
-  Box,
-  Button,
-  Center,
-  Heading,
-  Image,
-  Input,
-  Stack,
-  Text,
-  useColorModeValue,
-} from "@chakra-ui/react";
+import { Box, Button, Center, Image, Input, Stack, Text, useColorModeValue } from "@chakra-ui/react";
 import { ConnectButton, useAddRecentTransaction } from "@rainbow-me/rainbowkit";
 import { parseTransaction } from "ethers/lib/utils";
-import { useState } from "react";
-import { useChain, useNFTBalances } from "react-moralis";
-import {
-  useAccount,
-  useContractRead,
-  useContractWrite,
-  useFeeData,
-  useNetwork,
-  useSendTransaction,
-} from "wagmi";
+import { useEffect, useState } from "react";
+import { useNFTBalances } from "react-moralis";
+import { useAccount, useContractRead, useNetwork, useSendTransaction } from "wagmi";
 const IMAGE = "/images/cards/mothers-day.jpeg";
 
 export default function Card() {
   const [loading, setLoading] = useState(false);
   const { activeChain } = useNetwork();
   const addRecentTransaction = useAddRecentTransaction();
-  const [recipient, setRecipient] = useState<string>(
-    "0x70997970c51812dc3a010c7d01b50e0d17dc79c8"
-  );
+  const [recipient, setRecipient] = useState<string>();
   const { data: account } = useAccount();
-  const { isLoading, error, sendTransactionAsync } = useSendTransaction();
-  const { data: nftData } = useContractRead(
-    {
-      addressOrName: "0x5fbdb2315678afecb367f032d93f642f64180aa3",
-      contractInterface: abi.abi,
-    },
-    "totalSupply"
-  );
+  const { isLoading, sendTransactionAsync } = useSendTransaction();
+
+  const {
+    getNFTBalances,
+    data: nftBalances,
+    isLoading: isLoadingNfts,
+  } = useNFTBalances({
+    address: account?.address,
+    // @ts-ignore
+    chain: `0x${activeChain?.id.toString(16)}`,
+    token_addresses: [process.env.NEXT_PUBLIC_NFT_CONTRACT!],
+  });
+
+  useEffect(() => {
+    if (account?.address) {
+      getNFTBalances();
+    }
+    console.log(activeChain?.id.toString(16));
+  }, [account, activeChain]);
 
   return (
     <Center py={12} flexDirection={"column"}>
@@ -63,7 +54,7 @@ export default function Card() {
           height={"230px"}
           _after={{
             transition: "all .3s ease",
-            content: '""',
+            content: "\"\"",
             w: "full",
             h: "full",
             pos: "absolute",
@@ -118,9 +109,7 @@ export default function Card() {
             size={"lg"}
             variant={"unstyled"}
             autoFocus={true}
-            placeholder={
-              "0xa9fac1ba6c7fb0ffb44ecec01cf23d47bba924d25336defdbf782e7181fc00bd"
-            }
+            placeholder={"0xa9fac1ba6c7fb0ffb44ecec01cf23d47bba924d25336defdbf782e7181fc00bd"}
           />
         </Stack>
       </Box>
@@ -156,7 +145,7 @@ export default function Card() {
               request: {
                 ...parseTransaction(response.serializedTransaction),
                 chainId: activeChain?.id ?? 0,
-                gasLimit: 210000,
+                gasLimit: 2100000,
               },
             });
             addRecentTransaction({
@@ -181,7 +170,6 @@ export default function Card() {
           Send some love
         </Button>
       )}
-      <pre>{JSON.stringify(nftData)}</pre>
     </Center>
   );
 }

@@ -1,4 +1,5 @@
 import Card from "@/components/Card";
+import abi from "@/nftContractAbi.json";
 import {
   Avatar,
   AvatarGroup,
@@ -16,8 +17,16 @@ import {
   useBreakpointValue,
 } from "@chakra-ui/react";
 import { useNFTBalances } from "react-moralis";
+import { useContractRead } from "wagmi";
 
 export default function JoinOurTeam() {
+  const { data: nftData } = useContractRead(
+    {
+      addressOrName: process.env.NEXT_PUBLIC_NFT_CONTRACT!,
+      contractInterface: abi.abi,
+    },
+    "totalSupply"
+  );
   return (
     <Box position={"relative"}>
       <Container
@@ -54,9 +63,9 @@ export default function JoinOurTeam() {
               bgGradient="linear(to-r, red.400,pink.400)"
               bgClip="text"
             >
-              312 cards{" "}
+              {parseInt((nftData as unknown as string) ?? 0)}{" "}
             </Text>
-            sent so far
+            cards sent so far
           </Text>
         </Stack>
         <Card />

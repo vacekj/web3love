@@ -5,3 +5,4 @@ public/.DS_Store
 /.env.local
 /types/
 /cache/
+.env.local
