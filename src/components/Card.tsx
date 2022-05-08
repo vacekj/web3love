@@ -114,7 +114,7 @@ export default function Card() {
           />
         </Stack>
       </Box>
-      {<ConnectButton />}
+      {<ConnectButton chainStatus={"none"} />}
       {account && (
         <Button
           type={"submit"}
