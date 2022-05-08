@@ -1,9 +1,14 @@
 import { ethers, UnsignedTransaction, VoidSigner } from "ethers";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { File, NFTStorage } from "nft.storage";
+import { Blob, NFTStorage } from "nft.storage";
 const API_KEY = process.env.NEXT_NFT_STORAGE_API_KEY;
-const client = new NFTStorage({ token: API_KEY! });
 import nftContractAbi from "@/nftContractAbi.json";
+
+const client = new NFTStorage({ token: API_KEY! });
+const dev = process.env.NODE_ENV !== "production";
+export const server = dev
+  ? "http://localhost:3000"
+  : "https://web3love.vercel.app";
 
 async function storeNft(
   image: Blob,
@@ -11,8 +16,9 @@ async function storeNft(
   message: string,
   type: string
 ) {
+  const arrayBuffer = await image.arrayBuffer();
   const nft = {
-    image,
+    image: new Blob([arrayBuffer]),
     name: "Web3Love Card",
     description:
       "Send web3Cards to your favourite person. Stored on-chain, forever.",
@@ -38,7 +44,7 @@ type Request = {
 const imageUrls: {
   [key: string]: string;
 } = {
-  mothersDay: "mothers-day.jpeg",
+  "mothers-day": "mothers-day.jpeg",
 };
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
@@ -58,29 +64,38 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     });
   }
 
-  const image = await fetch("/images/cards/" + imageUrls[body.imageId]).then(
-    (r) => r.blob()
-  );
+  if (!imageUrls[body.imageId]) {
+    return res.status(404).json({
+      error: "Image not found",
+      body,
+    });
+  }
 
   try {
+    const image = await fetch(
+      `${server}/images/cards/${imageUrls[body.imageId]}`
+    ).then((r) => r.blob());
+
     const metadata = await storeNft(
       image,
       body.recipient,
       body.message,
       body.imageId
     );
-    const transactionRequest = await contract.populateTransaction.safeMint([
-      body.recipient,
-      metadata.url,
-    ]);
 
-    const unsignedTransaction =
-      ethers.utils.serializeTransaction(transactionRequest);
+    const transactionRequest = await contract.populateTransaction.safeMint(
+      body.recipient,
+      "ipfs://bafyreigqlyp4fares5ymghktqeg4udbi6kap5je5g3teiuku5jpwsyeze4/metadata.json"
+    );
+
+    const { from, ...unsignedTx } = transactionRequest;
+
+    console.log(unsignedTx);
+    const serializedTransaction = ethers.utils.serializeTransaction(unsignedTx);
 
     return res.status(201).json({
       success: true,
-      unsignedTransaction,
-      metadata,
+      serializedTransaction,
     });
   } catch (e) {
     return res.status(500).json(e);

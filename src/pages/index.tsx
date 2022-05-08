@@ -15,6 +15,7 @@ import {
   Text,
   useBreakpointValue,
 } from "@chakra-ui/react";
+import { useNFTBalances } from "react-moralis";
 
 export default function JoinOurTeam() {
   return (

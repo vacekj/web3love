@@ -12,25 +12,34 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import { ConnectButton, useAddRecentTransaction } from "@rainbow-me/rainbowkit";
+import { parseTransaction } from "ethers/lib/utils";
 import { useState } from "react";
-import { useAccount, useContractWrite } from "wagmi";
+import { useChain, useNFTBalances } from "react-moralis";
+import {
+  useAccount,
+  useContractRead,
+  useContractWrite,
+  useFeeData,
+  useNetwork,
+  useSendTransaction,
+} from "wagmi";
 const IMAGE = "/images/cards/mothers-day.jpeg";
 
 export default function Card() {
+  const [loading, setLoading] = useState(false);
+  const { activeChain } = useNetwork();
   const addRecentTransaction = useAddRecentTransaction();
   const [recipient, setRecipient] = useState<string>(
     "0x70997970c51812dc3a010c7d01b50e0d17dc79c8"
   );
   const { data: account } = useAccount();
-  const { writeAsync, isLoading: mintLoading } = useContractWrite(
+  const { isLoading, error, sendTransactionAsync } = useSendTransaction();
+  const { data: nftData } = useContractRead(
     {
-      addressOrName: process.env.NEXT_PUBLIC_NFT_CONTRACT!,
+      addressOrName: "0x5fbdb2315678afecb367f032d93f642f64180aa3",
       contractInterface: abi.abi,
     },
-    "safeMint",
-    {
-      args: [recipient, ""],
-    }
+    "totalSupply"
   );
 
   return (
@@ -119,14 +128,44 @@ export default function Card() {
       {account && (
         <Button
           type={"submit"}
-          isLoading={mintLoading}
+          isLoading={isLoading || loading}
           onClick={async () => {
-            const result = await writeAsync();
-            console.log(result);
+            setLoading(true);
+            /* Upload the NFT and get raw transaction*/
+            const response = await fetch("/api/upload", {
+              method: "POST",
+              body: JSON.stringify({
+                recipient,
+                signer: account?.address,
+                message: "Test message",
+                imageId: "mothers-day",
+              }),
+              headers: {
+                "Content-Type": "application/json",
+              },
+            })
+              .then((r) => r.json())
+              .catch((e) => console.log(e));
+
+            if (!response.success || !response.serializedTransaction) {
+              console.log(response);
+            }
+
+            const result = await sendTransactionAsync({
+              // @ts-ignore
+              request: {
+                ...parseTransaction(response.serializedTransaction),
+                chainId: activeChain?.id ?? 0,
+                gasLimit: 210000,
+              },
+            });
             addRecentTransaction({
               hash: result.hash,
               description: "Mint message NFT",
             });
+
+            await result.wait();
+            setLoading(false);
           }}
           size={"lg"}
           px={8}
@@ -142,6 +181,7 @@ export default function Card() {
           Send some love
         </Button>
       )}
+      <pre>{JSON.stringify(nftData)}</pre>
     </Center>
   );
 }
