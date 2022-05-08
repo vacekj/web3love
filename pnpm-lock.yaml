@@ -21,9 +21,9 @@ specifiers:
   babel-jest: ^28.1.0
   chai: ^4.3.6
   clsx: ^1.1.1
+  dprint: ^0.27.1
   eslint: ^8.15.0
   eslint-config-next: ^12.1.6
-  eslint-config-prettier: ^8.5.0
   eslint-plugin-simple-import-sort: ^7.0.0
   eslint-plugin-unused-imports: ^2.0.0
   framer-motion: ^6.3.3
@@ -85,9 +85,9 @@ devDependencies:
   '@typescript-eslint/parser': 5.22.0_hcfsmds2fshutdssjqluwm76uu
   autoprefixer: 10.4.7_postcss@8.4.13
   babel-jest: 28.1.0_@babel+core@7.17.10
+  dprint: 0.27.1
   eslint: 8.15.0
   eslint-config-next: 12.1.6_6vdljae35l7howjttefzzsim3e
-  eslint-config-prettier: 8.5.0_eslint@8.15.0
   eslint-plugin-simple-import-sort: 7.0.0_eslint@8.15.0
   eslint-plugin-unused-imports: 2.0.0_4lhejcve573tk5ngahyfsatu2i
   husky: 7.0.4
@@ -5390,6 +5390,10 @@ packages:
       buffer-fill: 1.0.0
     dev: false
 
+  /buffer-crc32/0.2.13:
+    resolution: {integrity: sha1-DTM+PwDqxQqhRUq9MO+MKl2ackI=}
+    dev: true
+
   /buffer-fill/1.0.0:
     resolution: {integrity: sha1-+PeLdniYiO858gXNY39o5wISKyw=}
     dev: false
@@ -6315,6 +6319,14 @@ packages:
       minimatch: 3.1.2
     dev: true
 
+  /dprint/0.27.1:
+    resolution: {integrity: sha512-V0kUvnbA2qXkUEgSFLl0HgOta461nUB2UkuUwOEHhERhoVTML+suajA7UFYPHprCuiEFdfJTSJlCFSmlAD17MA==}
+    hasBin: true
+    requiresBuild: true
+    dependencies:
+      yauzl: 2.10.0
+    dev: true
+
   /drbg.js/1.0.1:
     resolution: {integrity: sha1-Pja2xCs3BDgjzbwzLVjzHiRFSAs=}
     engines: {node: '>=0.10'}
@@ -6549,15 +6561,6 @@ packages:
       typescript: 4.6.4
     transitivePeerDependencies:
       - supports-color
-    dev: true
-
-  /eslint-config-prettier/8.5.0_eslint@8.15.0:
-    resolution: {integrity: sha512-obmWKLUNCnhtQRKc+tmnYuQl0pFU1ibYJQ5BGhTVB08bHe9wC8qUeG7c08dj9XX+AuPj1YSGSQIHl1pnDHZR0Q==}
-    hasBin: true
-    peerDependencies:
-      eslint: '>=7.0.0'
-    dependencies:
-      eslint: 8.15.0
     dev: true
 
   /eslint-import-resolver-node/0.3.6:
@@ -7234,6 +7237,12 @@ packages:
     resolution: {integrity: sha512-DkPJKQeY6kKwmuMretBhr7G6Vodr7bFwDYTXIkfG1gjvNpaxBTQV3PbXg6bR1c1UP4jPOX0jHUbbHANL9vRjVg==}
     dependencies:
       bser: 2.1.1
+    dev: true
+
+  /fd-slicer/1.1.0:
+    resolution: {integrity: sha1-JcfInLH5B3+IkbvmHY85Dq4lbx4=}
+    dependencies:
+      pend: 1.2.0
     dev: true
 
   /fetch-blob/3.1.5:
@@ -10019,6 +10028,10 @@ packages:
       sha.js: 2.4.11
     dev: false
 
+  /pend/1.2.0:
+    resolution: {integrity: sha1-elfrVQpng/kRUzH89GY9XI4AelA=}
+    dev: true
+
   /performance-now/2.1.0:
     resolution: {integrity: sha1-Ywn04OX6kT7BxpMHrjZLSzd8nns=}
     dev: false
@@ -12409,6 +12422,13 @@ packages:
       string-width: 4.2.3
       y18n: 5.0.8
       yargs-parser: 21.0.1
+    dev: true
+
+  /yauzl/2.10.0:
+    resolution: {integrity: sha1-x+sXyT4RLLEIb6bY5R+wZnt5pfk=}
+    dependencies:
+      buffer-crc32: 0.2.13
+      fd-slicer: 1.1.0
     dev: true
 
   /yn/3.1.1:
