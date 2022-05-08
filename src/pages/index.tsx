@@ -1,202 +1,229 @@
-import * as React from 'react';
-import { useEffect, useRef, useState } from 'react';
-import ConnectButton from '@/components/ConnectButton';
-import { useApiContract, useMoralis, useNFTBalances } from 'react-moralis';
-import SendMessage from '@/components/SendMessage';
-import abi from '../nftContractAbi';
-import CanvasDraw from 'react-canvas-draw';
-import ResetCanvasButton from '@/components/ResetCanvasButton';
-import Seo from '@/components/Seo';
-import Layout from '@/components/layout/Layout';
-import { NFTStorage } from 'nft.storage';
+import {
+  Avatar,
+  AvatarGroup,
+  Box,
+  Button,
+  Container,
+  Flex,
+  Heading,
+  Icon,
+  IconProps,
+  Input,
+  SimpleGrid,
+  Stack,
+  Text,
+  useBreakpointValue,
+} from "@chakra-ui/react";
 
-const API_KEY = process.env.NEXT_PUBLIC_NFT_STORAGE_API_KEY;
-const client = new NFTStorage({ token: API_KEY! });
+const avatars = [
+  {
+    name: "Ryan Florence",
+    url: "https://bit.ly/ryan-florence",
+  },
+  {
+    name: "Segun Adebayo",
+    url: "https://bit.ly/sage-adebayo",
+  },
+  {
+    name: "Kent Dodds",
+    url: "https://bit.ly/kent-c-dodds",
+  },
+  {
+    name: "Prosper Otemuyiwa",
+    url: "https://bit.ly/prosper-baba",
+  },
+  {
+    name: "Christian Nwamba",
+    url: "https://bit.ly/code-beast",
+  },
+];
 
-export default function HomePage() {
-  const canvas = useRef<HTMLCanvasElement | null>(null);
-  const { user } = useMoralis();
-
-  const { getNFTBalances, data } = useNFTBalances();
-  useEffect(() => {
-    if (canvas.current.canvas.grid) {
-    }
-  }, [canvas.current]);
-
-  useEffect(() => {
-    getNFTBalances();
-    address.current = user?.get('ethAddress');
-    updateCanvas();
-  }, [user]);
-  const address = useRef<string | null>();
-
-  const postcardImage = useRef();
-
-  const { data: nftData, runContractFunction: mintNft } = useApiContract({
-    // TODO: change this to the deployed contract address
-    address: '0x72B6Dc1003E154ac71c76D3795A3829CfD5e33b9',
-    functionName: 'mint',
-    /* TODO: change the ABI */
-    abi,
-    params: {
-      to: address.current,
-      tokenUri: '' /*TODO: the token metadata Uri returned from line 63*/,
-    },
-  });
-
-  const onClickSend = async () => {
-    const dataUrl = canvas.current.getDataURL('png', true);
-    const blob = await fetch(dataUrl).then((res) => res.blob());
-
-    const nft = {
-      image: blob,
-      name: 'Web3Love Letter',
-      description:
-        "Give the gift of web3 this Valentine's day to your favourite person",
-      properties: {
-        recipient,
-        message,
-      },
-    };
-
-    client.store(nft).then((s) => {
-      console.log(s);
-    });
-  };
-
-  const onClickReset = () => {
-    canvas.current.clear();
-  };
-
-  const [message, setMessage] = useState('');
-  const [recipient, setRecipient] = useState('');
-
-  useEffect(() => {
-    updateCanvas();
-  }, [user, message, recipient]);
-
-  const updateCanvas = () => {
-    if (canvas.current) {
-      const ctx = canvas.current.ctx.drawing;
-
-      /* TODO: change coordinates here*/
-
-      ctx.clearRect(100, 100, 450, 250);
-      ctx.font = '24px serif';
-      canvas.current.ctx.drawing.drawImage(canvas.current.canvas.grid, 0, 0);
-      canvas.current.ctx.drawing.drawImage(canvas.current.canvas.drawing, 0, 0);
-      wrapText(ctx, message, 150, 170, 400, 24);
-      wrapText(ctx, 'From: ' + user.get('ethAddress'), 150, 480, 400, 24);
-      wrapText(ctx, 'To: ' + recipient, 150, 550, 400, 24);
-    }
-  };
-
+export default function JoinOurTeam() {
   return (
-    <Layout>
-      <Seo />
-      <main className=''>
-        <div className='layout flex min-h-screen flex-col items-center text-center'>
-          <div className='mt-16 rounded-md bg-orange-100 py-8 px-4 text-2xl'>
-            Welcome to Web3 Love
-          </div>
-          <div>{user?.get('ethAddress')}</div>
-          <ConnectButton />
-
-          <div className='mx-auto mt-8 flex flex-col justify-start rounded-md'>
-            <div className='relative mt-8 w-full'>
-              <CanvasDraw
-                backgroundColor={'000'}
-                hideGrid={true}
-                canvasHeight={697}
-                canvasWidth={1024}
-                brushColor={'red'}
-                imgSrc={'/images/envelope_background.jpg'}
-                backgroundImage={'/images/envelope_background.jpg'}
-                hideInterface={true}
-                ref={canvas}
-                className={'bg-transparent'}
-              />
-
-              <div className='absolute top-16 right-24'>
-                <img
-                  style={{
-                    opacity: 0,
+    <Box position={"relative"}>
+      <Container
+        as={SimpleGrid}
+        maxW={"7xl"}
+        columns={{ base: 1, md: 2 }}
+        spacing={{ base: 10, lg: 32 }}
+        py={{ base: 10, sm: 20, lg: 32 }}
+      >
+        <Stack spacing={{ base: 10, md: 20 }}>
+          <Heading
+            lineHeight={1.1}
+            fontSize={{ base: "3xl", sm: "4xl", md: "5xl", lg: "6xl" }}
+          >
+            Senior web designers{" "}
+            <Text
+              as={"span"}
+              bgGradient="linear(to-r, red.400,pink.400)"
+              bgClip="text"
+            >
+              &
+            </Text>{" "}
+            Full-Stack Developers
+          </Heading>
+          <Stack direction={"row"} spacing={4} align={"center"}>
+            <AvatarGroup>
+              {avatars.map((avatar) => (
+                <Avatar
+                  key={avatar.name}
+                  name={avatar.name}
+                  src={avatar.url}
+                  size={useBreakpointValue({ base: "md", md: "lg" })}
+                  position={"relative"}
+                  zIndex={2}
+                  _before={{
+                    content: "\"\"",
+                    width: "full",
+                    height: "full",
+                    rounded: "full",
+                    transform: "scale(1.125)",
+                    bgGradient: "linear(to-bl, red.400,pink.400)",
+                    position: "absolute",
+                    zIndex: -1,
+                    top: 0,
+                    left: 0,
                   }}
-                  src='/images/envelope_stamp.png'
-                  alt=''
-                  ref={postcardImage}
                 />
-              </div>
-
-              <div className='absolute top-32 left-32 rounded-md border-2 border-black bg-transparent'>
-                <textarea
-                  onChange={(e) => {
-                    setMessage(e.target.value);
-                  }}
-                  id=''
-                  name=''
-                  rows={6}
-                  cols={30}
-                  className='bg-transparent text-2xl opacity-0'
-                />
-              </div>
-            </div>
-            <div className='mt-4 flex flex-row justify-around'>
-              <div className='flex justify-center'>
-                <ResetCanvasButton onClick={onClickReset} />
-              </div>
-              <input
-                className={'w-64'}
-                placeholder={'0x9795ECEA19A467458B6e4095265f9404d1B771C7'}
-                value={recipient}
-                onChange={(e) => {
-                  setRecipient(e.target.value);
+              ))}
+            </AvatarGroup>
+            <Text fontFamily={"heading"} fontSize={{ base: "4xl", md: "6xl" }}>
+              +
+            </Text>
+            <Flex
+              align={"center"}
+              justify={"center"}
+              fontFamily={"heading"}
+              fontSize={{ base: "sm", md: "lg" }}
+              bg={"gray.800"}
+              color={"white"}
+              rounded={"full"}
+              width={useBreakpointValue({ base: "44px", md: "60px" })}
+              height={useBreakpointValue({ base: "44px", md: "60px" })}
+              position={"relative"}
+              _before={{
+                content: "\"\"",
+                width: "full",
+                height: "full",
+                rounded: "full",
+                transform: "scale(1.125)",
+                bgGradient: "linear(to-bl, orange.400,yellow.400)",
+                position: "absolute",
+                zIndex: -1,
+                top: 0,
+                left: 0,
+              }}
+            >
+              YOU
+            </Flex>
+          </Stack>
+        </Stack>
+        <Stack
+          bg={"gray.50"}
+          rounded={"xl"}
+          p={{ base: 4, sm: 6, md: 8 }}
+          spacing={{ base: 8 }}
+          maxW={{ lg: "lg" }}
+        >
+          <Stack spacing={4}>
+            <Heading
+              color={"gray.800"}
+              lineHeight={1.1}
+              fontSize={{ base: "2xl", sm: "3xl", md: "4xl" }}
+            >
+              Join our team
+              <Text
+                as={"span"}
+                bgGradient="linear(to-r, red.400,pink.400)"
+                bgClip="text"
+              >
+                !
+              </Text>
+            </Heading>
+            <Text color={"gray.500"} fontSize={{ base: "sm", sm: "md" }}>
+              We’re looking for amazing engineers just like you! Become a part of our rockstar engineering team and
+              skyrocket your career!
+            </Text>
+          </Stack>
+          <Box as={"form"} mt={10}>
+            <Stack spacing={4}>
+              <Input
+                placeholder="Firstname"
+                bg={"gray.100"}
+                border={0}
+                color={"gray.500"}
+                _placeholder={{
+                  color: "gray.500",
                 }}
               />
-              <div className='flex justify-center'>
-                <SendMessage onClick={onClickSend} />
-              </div>
-            </div>
-            <div>
-              <div className='mt-8 text-left text-2xl text-white'>
-                Your messages:
-                {data?.result?.map((r) => (
-                  <img src={r.image!} />
-                ))}
-              </div>
-            </div>
-          </div>
-          <footer className='m-4 text-2xl text-black'>
-            © {new Date().getFullYear()} By{" Jessi's hackers"}
-          </footer>
-        </div>
-      </main>
-    </Layout>
+              <Input
+                placeholder="firstname@lastname.io"
+                bg={"gray.100"}
+                border={0}
+                color={"gray.500"}
+                _placeholder={{
+                  color: "gray.500",
+                }}
+              />
+              <Input
+                placeholder="+1 (___) __-___-___"
+                bg={"gray.100"}
+                border={0}
+                color={"gray.500"}
+                _placeholder={{
+                  color: "gray.500",
+                }}
+              />
+              <Button fontFamily={"heading"} bg={"gray.200"} color={"gray.800"}>
+                Upload CV
+              </Button>
+            </Stack>
+            <Button
+              fontFamily={"heading"}
+              mt={8}
+              w={"full"}
+              bgGradient="linear(to-r, red.400,pink.400)"
+              color={"white"}
+              _hover={{
+                bgGradient: "linear(to-r, red.400,pink.400)",
+                boxShadow: "xl",
+              }}
+            >
+              Submit
+            </Button>
+          </Box>
+          form
+        </Stack>
+      </Container>
+      <Blur
+        position={"absolute"}
+        top={-10}
+        left={-10}
+        style={{ filter: "blur(70px)" }}
+      />
+    </Box>
   );
 }
 
-const wrapText = (
-  ctx: any,
-  text: string,
-  x: number,
-  y: number,
-  maxWidth: number,
-  lineHeight: number
-) => {
-  const words = text.split(' ');
-  let line = '';
-  // @ts-ignore
-  for (const [index, w] of words.entries()) {
-    const testLine = line + w + ' ';
-    const metrics = ctx.measureText(testLine);
-    const testWidth = metrics.width;
-    if (testWidth > maxWidth && index > 0) {
-      ctx.fillText(line, x, y);
-      line = w + ' ';
-      y += lineHeight;
-    } else {
-      line = testLine;
-    }
-  }
-  ctx.fillText(line, x, y);
+export const Blur = (props: IconProps) => {
+  return (
+    <Icon
+      width={useBreakpointValue({ base: "100%", md: "40vw", lg: "30vw" })}
+      zIndex={useBreakpointValue({ base: -1, md: -1, lg: 0 })}
+      height="560px"
+      viewBox="0 0 528 560"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <circle cx="71" cy="61" r="111" fill="#F56565" />
+      <circle cx="244" cy="106" r="139" fill="#ED64A6" />
+      <circle cy="291" r="139" fill="#ED64A6" />
+      <circle cx="80.5" cy="189.5" r="101.5" fill="#ED8936" />
+      <circle cx="196.5" cy="317.5" r="101.5" fill="#ECC94B" />
+      <circle cx="70.5" cy="458.5" r="101.5" fill="#48BB78" />
+      <circle cx="426.5" cy="-0.5" r="101.5" fill="#4299E1" />
+    </Icon>
+  );
 };

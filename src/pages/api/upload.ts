@@ -1,6 +1,6 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
-import { NFTStorage, File } from 'nft.storage';
-import { Blob } from 'buffer';
+import { Blob } from "buffer";
+import type { NextApiRequest, NextApiResponse } from "next";
+import { File, NFTStorage } from "nft.storage";
 
 const API_KEY = process.env.NEXT_NFT_STORAGE_API_KEY;
 const client = new NFTStorage({ token: API_KEY! });
@@ -8,17 +8,16 @@ const client = new NFTStorage({ token: API_KEY! });
 async function storeNft(
   image: string,
   recipientAddress: string,
-  message: string
+  message: string,
 ) {
-  const buff = Buffer.from(image, 'base64url');
+  const buff = Buffer.from(image, "base64url");
 
   const nft = {
-    image: new File([buff], recipientAddress + '.png', {
-      type: 'image/png',
+    image: new File([buff], recipientAddress + ".png", {
+      type: "image/png",
     }),
-    name: 'Web3Love Letter',
-    description:
-      "Give the gift of web3 this Valentine's day to your favourite person",
+    name: "Web3Love Letter",
+    description: "Give the gift of web3 this Valentine's day to your favourite person",
     properties: {
       recipient: recipientAddress,
       message,
@@ -42,7 +41,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   if (!body.recipient || !body.image || !body.message) {
     return res.status(400).json({
-      error: 'Bad request',
+      error: "Bad request",
     });
   }
 

@@ -2,3 +2,4 @@
 .next
 .env
 public/.DS_Store
+/.env.local
