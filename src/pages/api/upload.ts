@@ -5,8 +5,8 @@ const API_KEY = process.env.NEXT_NFT_STORAGE_API_KEY;
 import nftContractAbi from "@/nftContractAbi.json";
 
 const client = new NFTStorage({ token: API_KEY! });
-const dev = process.env.NODE_ENV !== "production";
-export const server = dev
+export const isDevelopmentEnvironment = process.env.NODE_ENV !== "production";
+export const server = isDevelopmentEnvironment
   ? "http://localhost:3000"
   : "https://web3love.vercel.app";
 
@@ -14,14 +14,13 @@ async function storeNft(
   image: Blob,
   recipientAddress: string,
   message: string,
-  type: string
+  type: string,
 ) {
   const arrayBuffer = await image.arrayBuffer();
   const nft = {
     image: new Blob([arrayBuffer]),
     name: "Web3Love Card",
-    description:
-      "Send web3Cards to your favourite person. Stored on-chain, forever.",
+    description: "Send web3Cards to your favourite person. Stored on-chain, forever.",
     properties: {
       recipient: recipientAddress,
       message,
@@ -54,7 +53,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const contract = new ethers.Contract(
     process.env.NEXT_PUBLIC_NFT_CONTRACT!,
     nftContractAbi.abi,
-    voidSigner
+    voidSigner,
   );
 
   if (!body.recipient || !body.message) {
@@ -73,19 +72,19 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   try {
     const image = await fetch(
-      `${server}/images/cards/${imageUrls[body.imageId]}`
+      `${server}/images/cards/${imageUrls[body.imageId]}`,
     ).then((r) => r.blob());
 
     const metadata = await storeNft(
       image,
       body.recipient,
       body.message,
-      body.imageId
+      body.imageId,
     );
 
     const transactionRequest = await contract.populateTransaction.safeMint(
       body.recipient,
-      "ipfs://bafyreigqlyp4fares5ymghktqeg4udbi6kap5je5g3teiuku5jpwsyeze4/metadata.json"
+      "ipfs://bafyreigqlyp4fares5ymghktqeg4udbi6kap5je5g3teiuku5jpwsyeze4/metadata.json",
     );
 
     const { from, ...unsignedTx } = transactionRequest;
