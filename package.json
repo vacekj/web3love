@@ -13,7 +13,8 @@
     "test:watch": "jest --watch",
     "test": "jest",
     "format": "dprint fmt",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "forge:deploy": "source .env.local && cd ./contracts && forge create --private-key $FORGE_PRIVATE_KEY src/web3love.sol:Web3Love"
   },
   "dependencies": {
     "@babel/core": "^7.17.10",
@@ -21,23 +22,28 @@
     "@chakra-ui/react": "^1.8.8",
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
+    "@rainbow-me/rainbowkit": "^0.1.0",
     "@walletconnect/web3-provider": "^1.7.8",
     "@web3auth/web3auth": "^0.10.0",
     "chai": "^4.3.6",
     "clsx": "^1.1.1",
+    "ethers": "^5.6.5",
     "framer-motion": "^6.3.3",
+    "install": "^0.13.0",
     "magic-sdk": "8.1.1",
     "moralis": "^1.6.0",
     "next": "^12.1.6",
     "nft.storage": "^6.2.0",
     "node-fetch": "^3.2.4",
+    "npm": "^8.9.0",
     "react": "^18.1.0",
     "react-canvas-draw": "^1.2.1",
     "react-dom": "^18.1.0",
     "react-icons": "^4.3.1",
     "react-moralis": "^1.3.1",
     "react-sketch-canvas": "^6.1.0",
-    "sinon": "^14.0.0"
+    "sinon": "^14.0.0",
+    "wagmi": "^0.3.4"
   },
   "devDependencies": {
     "@commitlint/cli": "^16.2.4",
