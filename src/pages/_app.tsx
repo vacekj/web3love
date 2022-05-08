@@ -8,7 +8,7 @@ import { apiProvider, configureChains, getDefaultWallets, RainbowKitProvider } f
 import { chain, createClient, WagmiProvider } from "wagmi";
 
 const { provider, chains } = configureChains(
-  [chain.polygon, chain.localhost],
+  [chain.polygon, chain.localhost, chain.polygonMumbai],
   [apiProvider.alchemy(process.env.ALCHEMY_ID), apiProvider.fallback()],
 );
 
@@ -24,7 +24,6 @@ const wagmiClient = createClient({
 });
 
 function MyApp({ Component, pageProps }: AppProps) {
-
   return (
     <>
       <Head>
