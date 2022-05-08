@@ -1,26 +1,25 @@
-import { Blob } from "buffer";
+import { ethers, UnsignedTransaction, VoidSigner } from "ethers";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { File, NFTStorage } from "nft.storage";
-
 const API_KEY = process.env.NEXT_NFT_STORAGE_API_KEY;
 const client = new NFTStorage({ token: API_KEY! });
+import nftContractAbi from "@/nftContractAbi.json";
 
 async function storeNft(
-  image: string,
+  image: Blob,
   recipientAddress: string,
   message: string,
+  type: string
 ) {
-  const buff = Buffer.from(image, "base64url");
-
   const nft = {
-    image: new File([buff], recipientAddress + ".png", {
-      type: "image/png",
-    }),
-    name: "Web3Love Letter",
-    description: "Give the gift of web3 this Valentine's day to your favourite person",
+    image,
+    name: "Web3Love Card",
+    description:
+      "Send web3Cards to your favourite person. Stored on-chain, forever.",
     properties: {
       recipient: recipientAddress,
       message,
+      type,
     },
   };
 
@@ -29,25 +28,60 @@ async function storeNft(
 
 type Request = {
   recipient: string;
+  /** Who will be signing the message */
+  signer: string;
   message: string;
-  image: string;
+  /** ImageId to use */
+  imageId: string;
 };
 
-/* Takes an image and NFT metadata
- * and uploads both to IPFS via Infura
- * Returns an object with the NFT metadata that now includes the JPEG IPFS Link */
+const imageUrls: {
+  [key: string]: string;
+} = {
+  mothersDay: "mothers-day.jpeg",
+};
+
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   const body = req.body as Request;
 
-  if (!body.recipient || !body.image || !body.message) {
+  const voidSigner = new VoidSigner(body.signer);
+  const contract = new ethers.Contract(
+    process.env.NEXT_PUBLIC_NFT_CONTRACT!,
+    nftContractAbi.abi,
+    voidSigner
+  );
+
+  if (!body.recipient || !body.message) {
     return res.status(400).json({
       error: "Bad request",
+      body,
     });
   }
 
+  const image = await fetch("/images/cards/" + imageUrls[body.imageId]).then(
+    (r) => r.blob()
+  );
+
   try {
-    const metadata = await storeNft(body.image, body.recipient, body.message);
-    return res.status(201).json(metadata);
+    const metadata = await storeNft(
+      image,
+      body.recipient,
+      body.message,
+      body.imageId
+    );
+    const transactionRequest = await contract.populateTransaction.safeMint([
+      body.recipient,
+      metadata.url,
+    ]);
+
+    const unsignedTransaction =
+      ethers.utils.serializeTransaction(transactionRequest);
+
+    return res.status(201).json({
+      success: true,
+      unsignedTransaction,
+      metadata,
+    });
   } catch (e) {
     return res.status(500).json(e);
   }

@@ -1,14 +1,26 @@
 import nftContractAbi from "@/nftContractAbi.json";
 import abi from "@/nftContractAbi.json";
-import { Box, Button, Center, Heading, Image, Input, Stack, Text, useColorModeValue } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Center,
+  Heading,
+  Image,
+  Input,
+  Stack,
+  Text,
+  useColorModeValue,
+} from "@chakra-ui/react";
 import { ConnectButton, useAddRecentTransaction } from "@rainbow-me/rainbowkit";
 import { useState } from "react";
 import { useAccount, useContractWrite } from "wagmi";
-const IMAGE = "/images/mothers-day.jpeg";
+const IMAGE = "/images/cards/mothers-day.jpeg";
 
 export default function Card() {
   const addRecentTransaction = useAddRecentTransaction();
-  const [recipient, setRecipient] = useState<string>("0x70997970c51812dc3a010c7d01b50e0d17dc79c8");
+  const [recipient, setRecipient] = useState<string>(
+    "0x70997970c51812dc3a010c7d01b50e0d17dc79c8"
+  );
   const { data: account } = useAccount();
   const { writeAsync, isLoading: mintLoading } = useContractWrite(
     {
@@ -18,7 +30,7 @@ export default function Card() {
     "safeMint",
     {
       args: [recipient, ""],
-    },
+    }
   );
 
   return (
@@ -42,7 +54,7 @@ export default function Card() {
           height={"230px"}
           _after={{
             transition: "all .3s ease",
-            content: "\"\"",
+            content: '""',
             w: "full",
             h: "full",
             pos: "absolute",
@@ -70,12 +82,22 @@ export default function Card() {
           <Text color={"gray.500"} fontSize={"sm"} textTransform={"uppercase"}>
             from
           </Text>
-          <Input size={"lg"} variant={"unstyled"} autoFocus={true} placeholder={"your loving son"} />
+          <Input
+            size={"lg"}
+            variant={"unstyled"}
+            autoFocus={true}
+            placeholder={"your loving son"}
+          />
 
           <Text color={"gray.500"} fontSize={"sm"} textTransform={"uppercase"}>
             to
           </Text>
-          <Input size={"lg"} variant={"unstyled"} autoFocus={true} placeholder={"the best mother"} />
+          <Input
+            size={"lg"}
+            variant={"unstyled"}
+            autoFocus={true}
+            placeholder={"the best mother"}
+          />
 
           <Text color={"gray.500"} fontSize={"sm"} textTransform={"uppercase"}>
             send to
@@ -83,11 +105,13 @@ export default function Card() {
           <Input
             required={true}
             value={recipient}
-            onChange={e => setRecipient(e.target.value)}
+            onChange={(e) => setRecipient(e.target.value)}
             size={"lg"}
             variant={"unstyled"}
             autoFocus={true}
-            placeholder={"0xa9fac1ba6c7fb0ffb44ecec01cf23d47bba924d25336defdbf782e7181fc00bd"}
+            placeholder={
+              "0xa9fac1ba6c7fb0ffb44ecec01cf23d47bba924d25336defdbf782e7181fc00bd"
+            }
           />
         </Stack>
       </Box>
