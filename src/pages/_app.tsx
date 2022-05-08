@@ -10,7 +10,7 @@ import {chain, createClient, WagmiProvider} from "wagmi";
 
 const { provider, chains } = configureChains(
   isDevelopmentEnvironment ? [chain.polygonMumbai, chain.localhost, chain.kovan, chain.polygon] : [chain.polygon],
-  [apiProvider.infura(process.env.NEXT_PUBLIC_INFURA_PROJECT_ID!), apiProvider.fallback()],
+  [apiProvider.infura(process.env.NEXT_PUBLIC_INFURA_PROJECT_ID!)],
 );
 
 const { connectors } = getDefaultWallets({
