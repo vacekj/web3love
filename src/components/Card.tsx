@@ -200,7 +200,7 @@ export default function Card() {
               size={"lg"}
               variant={"unstyled"}
               autoFocus={true}
-              placeholder={"your loving son"}
+              placeholder={"my dear mom"}
             />
             <FormErrorMessage>{errors.to?.message}</FormErrorMessage>
           </FormControl>

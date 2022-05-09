@@ -4,6 +4,7 @@ import {AppProps} from "next/app";
 import Head from "next/head";
 import {MoralisProvider} from "react-moralis";
 
+/* Ensure env vars are set */
 import {isDevelopmentEnvironment} from "@/pages/api/upload";
 import {apiProvider, configureChains, getDefaultWallets, RainbowKitProvider} from "@rainbow-me/rainbowkit";
 import {chain, createClient, WagmiProvider} from "wagmi";
